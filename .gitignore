@@ -1,0 +1,21 @@
+notes.txt
+drug_checker.py
+ai-models/
+q-data/
+hf_cache/
+src/stores/llm/rerankers/test.py
+
+# Local coding style skill and project instructions
+/skills/rag-ishms-code-style/
+/AGENTS.md
+/.venv/
+/.env
+/.env.voice
+/docker/env/.env.postgres
+
+# Tool & IDE directories
+/.thinkrail/
+.pytest_cache/
+__pycache__/
+*.pyc
+

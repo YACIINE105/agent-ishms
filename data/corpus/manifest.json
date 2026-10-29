@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "domain": "University Student Services and Academic Regulations",
+  "documents": [
+    {
+      "document_id": "feps-student-handbook-pdf",
+      "filename": "FEPS_student_handbook.pdf",
+      "source_format": "pdf",
+      "language": "ar/en",
+      "title": "Faculty of Economics and Political Science (FEPS) Student Handbook (Credit Hours System)",
+      "sha256": "788ea1a12a87791f370f3dbed5ea9392e7ba8768bc77152ce5665f076d622c59",
+      "authorship": "Faculty of Economics and Political Science, Cairo University",
+      "source_type": "Institutional Student Handbook",
+      "permitted_use": "Educational and research benchmark corpus"
+    },
+    {
+      "document_id": "diversity-school-csv",
+      "filename": "diversity_school.csv",
+      "source_format": "csv",
+      "language": "en",
+      "title": "College and University Student Enrollment Diversity Statistics",
+      "sha256": "54fd4bf1b22fab831a4e0a90ca9fbd0a6fded3c4c5c818caf71aae2bf9f3cf2b",
+      "authorship": "Public Educational Statistics Dataset",
+      "source_type": "Structured Institutional Data",
+      "permitted_use": "Educational and research benchmark corpus"
+    },
+    {
+      "document_id": "student-services-faq-txt",
+      "filename": "student_services_faq.txt",
+      "source_format": "txt",
+      "language": "en/ar",
+      "title": "Student Services, Academic Regulations, and Administrative Procedures Guide",
+      "sha256": "4d30b99b01ba72b6e561ee22a9d4c4c07c8a5afc83b470597bb9f0357efae151",
+      "authorship": "Faculty of Economics and Political Science (FEPS) Student Affairs",
+      "source_type": "Administrative Guide and FAQ",
+      "permitted_use": "Educational and research benchmark corpus"
+    }
+  ]
+}
