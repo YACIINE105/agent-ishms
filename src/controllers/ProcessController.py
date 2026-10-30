@@ -9,13 +9,6 @@ from langchain_core.documents import Document
 
 from models.enums import ProcessingSgnal
 from typing import List
-from dataclasses import dataclass
-
-@dataclass
-class Document:
-    page_content: str
-    metadata : dict
-
 class ProcessController(BaseController):
     def __init__(self, project_id:str):
         super().__init__()
@@ -24,7 +17,7 @@ class ProcessController(BaseController):
         self.project_path = ProjectController().get_project_path(project_id=project_id)
 
     def get_file_extension(self, file_id:str):
-         return os.path.splitext(file_id)[-1]   
+        return os.path.splitext(file_id)[-1].lower()
 
     def get_file_loader(self, file_id:str):
 

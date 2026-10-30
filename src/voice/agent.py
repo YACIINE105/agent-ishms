@@ -119,7 +119,7 @@ def _bootstrap_service_fallback():
         vector_db_client = vector_db_factory.create(settings.VECTOR_DB_BACKEND)
         vector_db_client.db_client = db_client
 
-        embedding_client = llm_factory.create(provider=settings.EMBEDDING_PROVIDER)
+        embedding_client = llm_factory.create(provider=settings.EMBEDDING_PROVIDER, for_embeddings=True)
         embedding_client.set_embedding_model(
             model_id=settings.EMBEDDING_MODEL_ID,
             embedding_size=settings.EMBEDDING_MODEL_SIZE,

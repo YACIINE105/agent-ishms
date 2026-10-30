@@ -112,7 +112,7 @@ class NLPController(BaseController):
                 return 'ar'
         return 'en'
 
-    async def answer_rag_query(self, project: Project, query: str, limit: int = 5, max_output_tokens: int = 150):
+    async def answer_rag_query(self, project: Project, query: str, limit: int = 5, max_output_tokens: int = 1200):
         lang = self.detect_language(query)
         if self.template_parser:
             self.template_parser.set_language(lang)
@@ -169,7 +169,8 @@ class NLPController(BaseController):
             )
         ]
 
-        answer = self.generation_client.generate_text(
+        answer = await asyncio.to_thread(
+            self.generation_client.generate_text,
             prompt=full_prompt,
             chat_history=chat_history,
             max_output_token=max_output_tokens

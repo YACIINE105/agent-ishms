@@ -54,12 +54,14 @@ def build_system_instructions(persona: dict) -> str:
         "3. Once 'knowledge_base_rag' returns an answer, do NOT call any more tools. Immediately formulate your spoken response and speak to the user.\n"
         "4. Base your answer SOLELY on the verified RAG answer and state citations naturally (e.g. 'وفقاً للمرجع [S1]...' in Arabic, or 'According to [S1]...' in English).\n"
         "5. Keep the original language of the verified RAG answer. Do NOT translate Arabic facts into English.\n"
-        f"5. If 'knowledge_base_rag' returns no sufficient information, returns NO_EVIDENCE_FOUND, or if the question is outside '{p_domain}', "
+        "5. If the tool returns RAG_SERVICE_ERROR, the service has failed; briefly say the knowledge-base service is temporarily unavailable and ask the user to try again later, in their language. "
+        "Do NOT claim the documents lack information, invent an answer, or speak the internal error marker. Apply this rule ONLY when the tool returns RAG_SERVICE_ERROR.\n"
+        f"6. If 'knowledge_base_rag' returns no sufficient information, returns NO_EVIDENCE_FOUND, or if the question is outside '{p_domain}', "
         "you MUST give a strict, polite refusal of AT MOST TWO LINES (under 25 words) in the user's language. Never elaborate, guess, or apologize profusely.\n"
         "   Arabic refusal: 'عذراً، لا تتوفر معلومات كافية حول هذا الموضوع في لوائح الكلية الرسمية.'\n"
         "   English refusal: 'Sorry, I don't have sufficient information about that in the official project documents.'\n"
-        "6. Keep all spoken answers concise (1-3 sentences) suitable for natural voice conversation.\n"
-        "7. NEVER output internal XML tool tags like '<tool_call>' or ']<]minimax[>' in your spoken reply."
+        "7. Keep all spoken answers concise (1-3 sentences) suitable for natural voice conversation.\n"
+        "8. NEVER output internal XML tool tags like '<tool_call>' or ']<]minimax[>' in your spoken reply."
     )
 
 async def generate_project_persona(

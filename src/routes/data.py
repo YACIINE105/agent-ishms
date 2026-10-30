@@ -4,7 +4,7 @@ import os
 from helpers.config import get_settings, Settings
 from controllers import DataController, ProjectController, ProcessController, NLPController
 import aiofiles
-from models.enums import ResponseSignal
+from models.enums import ResponseSignal, ProcessingSgnal
 import logging
 from .schemes.data import ProcessRequest
 from models import ProjectModel
@@ -180,7 +180,10 @@ async def process_endpoint(request :Request, project_id:int, process_request:Pro
             logger.error(f"error while processing  file: {file_id}")
             continue
 
-        if do_emantic_chunk == 1:
+        if (
+            do_emantic_chunk == 1
+            and process_controller.get_file_extension(file_id) != ProcessingSgnal.CSV.value
+        ):
             file_chunks = process_controller.process_file_content_using_docling(file_content=file_content, file_id=file_id,
                                                                            breakpoint_threshold_type=breakpoint_threshold_type,
                                                                            breakpoint_threshold_amount=breakpoint_threshold_amount)

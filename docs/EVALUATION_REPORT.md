@@ -1,118 +1,118 @@
-# Bilingual Voice RAG Evaluation Report (agent-ishms)
+# Bilingual Voice RAG Evaluation Report
 
-**Evaluation Date:** October 28, 2026  
-**System Evaluated:** `agent-ishms` Bilingual Voice RAG Assistant  
-**Corpus Evaluated:** 3 Formats (PDF with tables, TXT FAQ, CSV structured diversity dataset) — 378 total indexed chunks in PostgreSQL `pgvector`.  
-**Benchmark Suite:** `eval/questions.jsonl` (20 questions: 10 English, 10 Arabic)  
-**Evaluation Output:** `eval/results.json`  
+## What this report covers
 
----
+This is an honest review of the results saved in [`eval/results.json`](../eval/results.json), using the questions in [`eval/questions.jsonl`](../eval/questions.jsonl) and the scoring logic currently in [`eval/run_eval.py`](../eval/run_eval.py).
 
-## 1. Executive Summary
+**This revision is not a new benchmark run.** The saved results name `minimax-m3.1-flash` as the generation model, but do not record a run timestamp, code revision, embedding endpoint, or complete configuration. The previous report dated the evaluation October 28, 2026; that date cannot be confirmed from the results file itself. These results should not be presented as measurements of the system after the recent fixes.
 
-This report documents the empirical evaluation of the `agent-ishms` bilingual voice retrieval-augmented generation (RAG) assistant. The system was tested across retrieval quality, factual groundedness, source citation precision, and honest refusal behavior on unanswerable questions.
+The short version: the saved run looks promising at finding the right source file, and several answers contain useful facts and citations. But it does not establish perfect evidence retrieval or reliable factual accuracy. There are incomplete answers, citation-format problems, and visible language-quality issues that the headline scores miss.
 
-### Overall Benchmark Metrics (20 Questions)
+## What was tested
 
-| Metric | Target | Measured Result | Status |
-|---|:---:|:---:|:---:|
-| **Retrieval Hit Rate @ 1** | $\ge 80\%$ | **100.0%** (16/16) | **PASSED** |
-| **Retrieval Hit Rate @ 3** | $\ge 90\%$ | **100.0%** (16/16) | **PASSED** |
-| **Retrieval Hit Rate @ 5** | $\ge 95\%$ | **100.0%** (16/16) | **PASSED** |
-| **Mean Reciprocal Rank (MRR)** | $\ge 0.85$ | **1.000** | **PASSED** |
-| **Citation Rate** | $\ge 85\%$ | **93.8%** (15/16) | **PASSED** |
-| **Answer Groundedness** | $\ge 75\%$ | **81.2%** (13/16) | **PASSED** |
-| **Refusal Accuracy (Unanswerable)** | $\ge 75\%$ | **75.0%** (3/4) | **PASSED** |
-| **Average Retrieval Latency** | $< 1.0\text{s}$ | **0.428s** (428 ms) | **PASSED** |
+The question set contains 20 questions: 10 in English and 10 in Arabic. Sixteen are labelled answerable, and four deliberately ask about topics outside the supplied material.
 
----
+The expected sources cover three files:
 
-## 2. Evaluation Methodology and Test Design
+- `FEPS_student_handbook.pdf`: academic rules and grading information.
+- `student_services_faq.txt`: fees, office locations, processing times, and administrative procedures.
+- `diversity_school.csv`: enrollment figures.
 
-To rigorously satisfy the requirements of the technical assignment, a test set of **20 questions** was authored directly against the frozen corpus. The questions were designed to stress distinct aspects of the bilingual RAG pipeline:
+Five questions are labelled as table questions. Two include a supplied conversation history to test a correction or follow-up. Three explicitly carry the `cross_language` tag. These are small, targeted checks—not broad coverage of bilingual conversation.
 
-### Question Set Distribution
+The evaluator retrieves up to five documents and sends the first three to a text-generation request. It does **not** measure a full microphone-to-speaker conversation. The earlier claim of 378 indexed chunks is not substantiated by the saved results, so it is not used here as a verified corpus count.
 
-| Dimension | Count | Details |
-|---|:---:|---|
-| **Language Balance** | 10 EN / 10 AR | 50% English, 50% Modern Standard Arabic. |
-| **Multi-Format Coverage** | 3 Formats | Evaluates `FEPS_student_handbook.pdf` (tables & academic rules), `student_services_faq.txt` (administrative procedures & fees), and `diversity_school.csv` (structured tabular metrics). |
-| **Table & Numerical Data** | 5 Questions | Exact queries requiring lookup of numbers, GPA values, row counts, and percentages (Q01, Q05, Q06, Q13, Q17). |
-| **Cross-Language Retrieval** | 4 Questions | Arabic questions querying English source texts and English questions querying Arabic institutional terms (Q07, Q16, Q17, Q18). |
-| **Conversational Context / Correction** | 2 Questions | Multi-turn queries testing question correction ("Actually, what is the cost of X rather than Y?") using conversation history (Q08, Q18). |
-| **Unanswerable Refusals** | 4 Questions | Unsupported questions designed to test whether the system refuses honestly without hallucinating policies or numbers (Q09, Q10, Q19, Q20). |
+## What the saved scores actually mean
 
----
+The counts below were checked against the individual saved question records. Timings were recalculated from those records; no new API calls were made for this report revision.
 
-## 3. Retrieval Performance Analysis
+| Check | Saved result | How to read it |
+|---|---:|---|
+| Source-file Hit@1 | 16/16, 100% | Every answerable question has a recorded rank-one source-name match. This does not confirm the right page, section, row, or passage. |
+| Source-file Hit@3 and Hit@5 | 16/16, 100% each | The same source-name check at larger cutoffs. |
+| Source-file MRR | 1.000 | All 16 recorded first matches are at rank one. It has the same source-matching limitation. |
+| Citation-marker detection | 15/16, 93.8% | A simple text check found a citation-like marker or source-related word. It does not verify citation accuracy. |
+| “Groundedness” proxy | 13/16, 81.2% | For answerable questions, the script requires a detected citation and no detected refusal. It does not compare the answer with the reference facts. |
+| Refusal-keyword detection | 3/4, 75.0% | Three unsupported questions matched the refusal keyword list. This is not a human-reviewed refusal-accuracy score. |
+| Mean retrieval-stage time | 0.465 s | Recalculated across all 20 stored retrieval times. Median: 0.251 s; range: 0.223–2.561 s. |
+| Mean generation-stage time | 3.739 s | Recalculated across all 20 stored generation times. Range: 2.109–6.096 s. Not spoken-response latency. |
 
-The retrieval engine uses PostgreSQL `pgvector` (`cosine` similarity) over 2048-dimensional embeddings (`nvidia/nemotron-3-embed-1b:free`).
+I have removed the blanket “PASSED” labels. A score can meet a numerical target while still measuring something weaker than its name suggests.
 
-### Detailed Retrieval Findings:
-1. **Perfect First-Rank Accuracy (MRR = 1.0)**:
-   For all 16 answerable questions, the gold evidence was retrieved at **Rank 1** (`Hit@1 = 100%`). 
-2. **Cross-Language Alignment**:
-   Arabic queries successfully retrieved English FAQ sections (e.g., Q11 retrieved FAQ Section 6.1, Q15 retrieved FAQ Section 3.1, and Q17 retrieved CSV Row 19 for Ivy Tech Community College).
-3. **Retrieval Speed**:
-   Average retrieval latency across the 20 queries was **428 ms**. Offloading the synchronous embedding API call to `asyncio.to_thread` eliminated event-loop blocking.
+### Why the retrieval score needs caution
 
----
+The current `check_retrieval_hit` function matches source names using substring comparisons. It does not check the expected page, section, table, or CSV row. The results file also does not save the retrieved passages and their metadata for an independent inspection of each hit.
 
-## 4. Generation, Groundedness, and Citation Analysis
+So the supported statement is **“all answerable questions recorded a rank-one source-file match,”** not “the correct evidence was always retrieved first.” Unsupported questions have empty expected-source lists, which the helper treats as a hit with rank zero. Those entries are excluded from the answerable-question retrieval scores and should not be interpreted as successful retrieval.
 
-Answers were evaluated for **source attribution** (citing `[S1]`, `Section`, `Page`, or `Table`) and **groundedness** (factual alignment with reference facts).
+## A closer look at the answers
 
-### Key Findings:
-1. **Citation Rate (93.8%)**:
-   15 out of 16 answerable responses explicitly cited their evidence source (e.g., *"According to [S1], an official academic transcript costs 100 EGP per copy..."* or *"وفقاً للمصدر [S1]، يتم استرداد 50%..."*).
-2. **Conversational Correction Handling (100%)**:
-   Both conversational follow-up questions (Q08 and Q18) successfully resolved the entity change from transcript to enrollment certificate / urgent service fee, answering with the exact corrected figures (**50 EGP** and **100 EGP**).
-3. **Refusal Honesty (75%–100%)**:
-   - For Q10 (Japanese JLPT N1 score): Correctly refused (*"The provided evidence does not specify any minimum JLPT N1 score for undergraduate graduation."*).
-   - For Q19 (Equestrian riding fee): Correctly refused in Arabic (*"لم تُذكر في أدلة دليل الطالب المتوفرة أي رسوم تتعلق بورشة تدريب الفروسية..."*).
-   - For Q20 (Mechatronics/Aerospace engineering): Correctly refused in Arabic (*"لا تتضمن الأدلة المتاحة شروط الالتحاق ببرنامجي هندسة الميكاترونكس وهندسة الطيران..."*).
-   - For Q09 (Veterinary medicine fee): Stated that the context does not specify the tuition fee for clinical veterinary medicine.
+Here are the outcomes recorded for each question. “Proxy pass” below refers only to the script's citation-plus-no-refusal rule; it is not a manual factual endorsement.
 
----
+| ID | Topic | What the saved output shows |
+|---|---|---|
+| Q01 | English grading scale | Gives GPA 3.6–4.0 but says the percentage range cannot be determined. Recorded proxy failure, not a complete answer. |
+| Q02 | Transcript fee and processing time | Gives 100 EGP and 3–5 business days with `[S1]`. Proxy pass. |
+| Q03 | Lost student ID | Gives 150 EGP and the Student Affairs Office, Room 101, with citations. Proxy pass. |
+| Q04 | Credit-hour overload | Gives 21 hours and conditions, but uses `(S1)`, which the citation check misses. Recorded citation and proxy failure. |
+| Q05 | Female enrollment at Phoenix-Arizona | Gives 134,722 with `[S1]`. Proxy pass. |
+| Q06 | Total enrollment at Ivy Tech | Gives 91,179 with `[S1]`. Proxy pass. |
+| Q07 | Arabic office designation | Gives إدارة شؤون الطلاب والسجلات and Room 104 with `[S2]`. Proxy pass. |
+| Q08 | Corrected certificate request | Gives 50 EGP and two business days with `[S1]`. Proxy pass with the supplied history. |
+| Q09 | Veterinary residency tuition | Says the context does not state the fee, but the refusal detector marks it false. A scoring limitation worth reviewing. |
+| Q10 | JLPT graduation requirement | Says the evidence does not specify a minimum score. Refusal detected. |
+| Q11 | Arabic lost-ID request | Gives the fee and procedure, but includes the stray Chinese text `丢了`. Proxy pass despite a clear language defect. |
+| Q12 | Arabic enrollment certificate | Gives 50 EGP and two business days with a citation. Proxy pass. |
+| Q13 | Arabic A+ grading question | Does not provide the requested A+ percentage or points. Includes `对应` and ends at “نسبة A+”. Recorded proxy failure. |
+| Q14 | Arabic credit-hour limits | Distinguishes a regular maximum of 19 from an exceptional overload of 21. The earlier report's excerpt omitted that distinction. Proxy pass. |
+| Q15 | Second-week refund | Gives 50% with `[S1]`. Proxy pass. |
+| Q16 | Arabic office location and hours | Gives Room 104 and Sunday–Thursday, 9:00–2:30, with `[S1]`. Proxy pass. |
+| Q17 | Arabic enrollment lookup | Gives 61,498, but also includes the awkward fragment `Bianca؟ لا.`. Proxy pass despite poor wording. |
+| Q18 | Arabic urgent-service follow-up | Gives an additional 100 EGP and 24 business hours with citations. Proxy pass with the supplied history. |
+| Q19 | Equestrian workshop fee | Says the fee is not in the available material. Refusal detected. |
+| Q20 | Engineering admission requirements | Says the available evidence does not contain those requirements. Refusal detected. |
 
-## 5. Question-by-Question Evaluation Results
+### What worked reasonably well
 
-| ID | Lang | Category | Format | Rank | Ret. Time | Gen. Time | Cited? | Grounded? | Spoken Answer Excerpt |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|---|
-| **Q01** | en | table | pdf | 1 | 2.56s | 5.53s | Yes | Yes | *"According to [S1], an 'A' corresponds to a cumulative GPA of 3.6–4.0..."* |
-| **Q02** | en | policy | txt | 1 | 0.34s | 2.12s | Yes | Yes | *"According to [S1], an official transcript costs 100 EGP per copy and is issued within 3–5 business days..."* |
-| **Q03** | en | policy | txt | 1 | 0.24s | 4.81s | Yes | Yes | *"The replacement fee is 150 EGP, paid at the University Treasury. Student Affairs (Room 101) processes it..."* |
-| **Q04** | en | policy | pdf/txt | 1 | 0.23s | 4.77s | Yes | Yes | *"Students on the Dean's List may register for up to 21 credit hours, provided GPA of 3.50+..."* |
-| **Q05** | en | table | csv | 1 | 0.25s | 2.68s | Yes | Yes | *"According to [S1], 134,722 female students are enrolled at University of Phoenix-Arizona..."* |
-| **Q06** | en | table | csv | 1 | 0.24s | 2.87s | Yes | Yes | *"The total student enrollment reported for Ivy Tech Community College-Central Indiana is 91,179. [S1]"* |
-| **Q07** | en | bilingual | txt | 1 | 0.23s | 2.57s | Yes | Yes | *"According to [S2], the office is designated إدارة شؤون الطلاب والسجلات in Room 104..."* |
-| **Q08** | en | context | txt | 1 | 0.22s | 2.11s | Yes | Yes | *"The Enrollment Verification Certificate costs 50 EGP per copy and is issued within 2 business days. [S1]"* |
-| **Q09** | en | refusal | — | None | 2.12s | 2.15s | Yes | Yes (Refused) | *"The provided context does not state the tuition fee for clinical veterinary medicine..."* |
-| **Q10** | en | refusal | — | None | 0.31s | 3.24s | Yes | Yes (Refused) | *"The provided evidence does not specify any minimum JLPT N1 score for undergraduate graduation..."* |
-| **Q11** | ar | policy | txt | 1 | 0.22s | 5.28s | Yes | Yes | *"وفق [S1]، رسوم استخراج بدل فاقد لبطاقة الطالب 150 جنيهًا مصريًا، تُدفع في خزانة الجامعة..."* |
-| **Q12** | ar | policy | txt | 1 | 0.27s | 2.80s | Yes | Yes | *"وفقًا لـ[S1]، رسوم شهادة القيد الرسمية هي 50 جنيهًا مصريًا لكل نسخة، وتُصدر خلال يومَي عمل..."* |
-| **Q13** | ar | table | pdf | 1 | 0.24s | 5.04s | Yes | Yes | *"وفقًا لـ[S1]، يقابل تقدير ممتاز مرتفع معدل 4.00 نقاط ونسبة مئوية 95% فأكثر..."* |
-| **Q14** | ar | policy | pdf/txt | 1 | 0.33s | 4.41s | Yes | Yes | *"وفقًا لـ[S2]، الحد الأدنى للعبء الدراسي هو 12 ساعة معتمدة، والحد الأقصى 21 ساعة..."* |
-| **Q15** | ar | refund | txt | 1 | 0.26s | 3.09s | Yes | Yes | *"وفقًا للمصدر [S1]، يتم استرداد 50% من الرسوم الدراسية المدفوعة عند الانسحاب خلال الأسبوع الثاني..."* |
-| **Q16** | ar | policy | txt | 1 | 0.26s | 6.10s | Yes | Yes | *"وفقًا لمصدر [S1]، يقع مكتب شؤون الطلاب والسجلات في المبنى الرئيسي، الدور الأرضي، الغرفة 104..."* |
-| **Q17** | ar | table | csv | 1 | 0.26s | 4.21s | Yes | Yes | *"يبلغ عدد الطلاب البيض 61,498 طالبًا وفق بيانات التنوع الطلابي [S1]..."* |
-| **Q18** | ar | context | txt | 1 | 0.25s | 4.47s | Yes | Yes | *"تبلغ الرسوم الإضافية لخدمة الاستخراج العاجل 100 جنيه مصري، وتُصدر السجلات خلال 24 ساعة عمل..."* |
-| **Q19** | ar | refusal | — | None | 0.24s | 2.92s | Yes | Yes (Refused) | *"لم تُذكر في أدلة دليل الطالب المتوفرة أي رسوم تتعلق بورشة تدريب الفروسية..."* |
-| **Q20** | ar | refusal | — | None | 0.23s | 3.63s | Yes | Yes (Refused) | *"لا تتضمن الأدلة المتاحة شروط الالتحاق ببرنامجي هندسة الميكاترونكس وهندسة الطيران..."* |
+The saved fee and processing-time answers are concrete and generally easy to follow. For example, Q02 reports “100 EGP per copy” and “3–5 business days,” while Q08 switches to the enrollment certificate and reports “50 EGP per copy.” Q16 supplies an office location and opening hours in Arabic.
 
----
+Both supplied-history correction questions produced answers that match the changed request. That is encouraging, but two scripted examples are not enough to claim reliable multi-turn voice conversation.
 
-## 6. Error Analysis and Limitations
+### What still needs attention
 
-1. **Reasoning Token Budget**:
-   Models like `minimax-m3.1-flash` utilize internal reasoning tokens before emitting conversational text. Setting `max_tokens` below 300 caused early truncation on dense table questions; setting `max_tokens=600` restored complete answers.
-2. **Tool-Calling Multi-Turn Loops**:
-   Unconstrained LLMs can attempt multiple iterative search queries for broad topics. Setting `max_tool_steps=1` in `AgentSession` successfully enforced single-round grounded synthesis.
-3. **Arabic TTS Server Cold Start**:
-   The Microsoft Edge neural voice network exhibits a cold-start WebSocket latency of 1.5s–3.0s on the first Arabic utterance. Pre-warming the synthesis engine during worker startup minimizes interactive conversational delay.
+The grading questions are the clearest weak spot. Q01 answers only part of the request. Q13 does not provide the requested A+ values at all. The old report replaced that failure with an apparently successful answer; this revision does not repeat it.
 
----
+Arabic fluency also needs a separate review. Q11, Q13, and Q17 contain visible foreign-language fragments or broken phrasing. These problems matter in a voice assistant even when a numerical fact is present.
 
-## 7. Conclusion
+Finally, the scoring can be misleading in both directions. Q04 loses credit because of citation punctuation. Q09 communicates that a fee is unavailable, but misses the refusal keyword list. Conversely, the proxy can approve an awkward or factually unchecked answer just because it includes `[S1]` and no refusal phrase.
 
-The evaluation demonstrates that `agent-ishms` achieves **100% Top-1 retrieval accuracy** across bilingual multi-format documents (PDF, TXT, CSV), maintains strict citation fidelity (**93.8%**), accurately refuses unsupported inquiries (**75%–100%**), and handles conversational corrections seamlessly in both English and Arabic.
+## Recent debugging checks—separate from the benchmark
+
+During the investigation in this workspace, we observed two additional generation problems:
+
+1. The configured RAG credential returned HTTP 401, while the existing dedicated A2Agent credential completed a test request successfully.
+2. After correcting the credential, a RAG request at the 150-token default returned empty text. Repeating the question with a 1,200-token budget produced a cited answer.
+
+After the fixes, direct calls through the standalone `knowledge_base_rag` tool returned cited answers for the lost-ID fee question in English and the office-location/hours question in Arabic. The fee response reported **150 EGP**. The Arabic response still contained mixed-language wording and mentioned two differently named offices; a cited response alone does not settle answer quality.
+
+The local `tests/` suite also passed **19 tests** with coverage collection disabled. These tests check application behavior, including error handling; they are not 19 independently evaluated RAG answers.
+
+These are development checks observed in this chat, not a rerun of the 20-question benchmark. They were not written into `eval/results.json`, and no new benchmark percentages, reliability figures, or voice-latency measurements are claimed. Full microphone/TTS playback was not tested during those checks.
+
+## Limits and the next useful evaluation
+
+Before using this report as evidence of production readiness, I would address the following:
+
+- **Make the benchmark reproducible.** Save the run timestamp, code revision, corpus identity, model settings, and retrieved passages. The current evaluator imports `build_rag_controller`, which is not defined in the current `src/voice/agent.py`, so its entry point needs repair before a fresh run.
+- **Check evidence locations, not just filenames.** Validate the expected page, section, or row and inspect whether the returned passage supports the answer.
+- **Review facts and language separately.** The script loads `reference_facts` but does not use them to score answers. A human-reviewed rubric should check completeness, numerical accuracy, source support, and Arabic fluency.
+- **Record failure types explicitly.** Authentication errors, timeouts, empty generation, and genuinely absent evidence should not be counted as the same outcome.
+- **Test the actual voice path.** Measure speech recognition, tool execution, first audible response, interruptions, and TTS quality in both languages. Text-generation timing does not answer those questions.
+
+The saved data does not substantiate the earlier claims about Edge TTS cold-start timing, pre-warming improvements, or eliminated event-loop blocking. Those claims have been removed rather than presented as measured results.
+
+## Bottom line
+
+There is useful evidence here that the system can find relevant source files and produce cited answers for a small bilingual question set. There is also clear evidence of incomplete grading answers, imperfect scoring, and Arabic wording problems.
+
+The fairest conclusion is that this is a promising development result—not proof of perfect retrieval, verified factual groundedness, or a fully evaluated voice experience. The recent fixes restored answers in two direct tool checks. A fresh, reproducible benchmark is still needed to measure the updated system.

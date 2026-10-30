@@ -27,6 +27,8 @@ def create_knowledge_base_rag_tool(
     async def knowledge_base_rag(query: str) -> str:
         """Execute full RAG with document citations and honest refusals."""
         t0 = time.time()
+        if turn_context is not None:
+            turn_context.update(last_rag_query=query, last_rag_answer=None, last_sources_cited=[])
         span = None
         if langfuse:
             span = langfuse.start_observation(
@@ -37,7 +39,7 @@ def create_knowledge_base_rag_tool(
             )
 
         if not nlp_controller:
-            msg = "NO_EVIDENCE_FOUND: NLP RAG service is not available."
+            msg = "RAG_SERVICE_ERROR: The knowledge-base service is temporarily unavailable. Please try again later."
             if span:
                 span.update(output={"status": "error", "message": msg})
                 span.end()
@@ -53,6 +55,12 @@ def create_knowledge_base_rag_tool(
                 limit=5,
             )
             duration_ms = round((time.time() - t0) * 1000, 2)
+            if not answer or not answer.strip():
+                logger.error("RAG generation returned no answer")
+                if span:
+                    span.update(output={"status": "error", "error": "generation_failed", "duration_ms": duration_ms})
+                    span.end()
+                return "RAG_SERVICE_ERROR: The knowledge-base answer service is temporarily unavailable. Please try again later."
 
             sources_cited = []
             if answer:
@@ -68,7 +76,7 @@ def create_knowledge_base_rag_tool(
             if span:
                 span.update(
                     output={
-                        "status": "answered" if answer else "insufficient_evidence",
+                        "status": "answered" if full_prompt else "insufficient_evidence",
                         "duration_ms": duration_ms,
                         "answer_preview": (answer or "")[:150],
                         "sources_cited": sources_cited,
@@ -76,16 +84,16 @@ def create_knowledge_base_rag_tool(
                 )
                 span.end()
 
-            if not answer or not answer.strip():
-                return "NO_EVIDENCE_FOUND: No supporting facts found in the project's official documents."
+            if not full_prompt:
+                return f"NO_EVIDENCE_FOUND: {answer}"
 
             return f"Verified Project Answer:\n{answer}"
 
         except Exception as e:
-            logger.error(f"Error in knowledge_base_rag tool: {e}")
+            logger.error("RAG service failed (%s)", type(e).__name__)
             if span:
-                span.update(output={"status": "error", "error": str(e)})
+                span.update(output={"status": "error", "error": type(e).__name__})
                 span.end()
-            return f"NO_EVIDENCE_FOUND: Error searching knowledge base: {e}"
+            return "RAG_SERVICE_ERROR: The knowledge-base service is temporarily unavailable. Please try again later."
 
     return knowledge_base_rag

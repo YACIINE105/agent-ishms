@@ -5,12 +5,14 @@ class LLMProviderFactory:
     def __init__(self, config: dict):
         self.config = config
 
-    def create(self, provider: str):
+    def create(self, provider: str, *, for_embeddings: bool = False):
         if provider == LLM_Enums.OPENAI.value:
-            return OpenAIProvider(
-               api_key=self.config.OPENAI_API_KEY,
-               api_url=self.config.OPENAI_BASE_URL
-            )
+            api_key = self.config.OPENAI_API_KEY
+            api_url = self.config.OPENAI_BASE_URL
+            if for_embeddings:
+                api_key = getattr(self.config, "EMBEDDING_API_KEY", None) or api_key
+                api_url = getattr(self.config, "EMBEDDING_BASE_URL", None) or api_url
+            return OpenAIProvider(api_key=api_key, api_url=api_url)
 
         if provider == LLM_Enums.COHERE.value:
             return CohereProvider(

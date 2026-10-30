@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     OPENAI_BASE_URL : str = None
     OPENAI_API_KEY : str = None
 
+    EMBEDDING_BASE_URL: str | None = None
+    EMBEDDING_API_KEY: str | None = None
+
     COHERE_API_KEY : str = None
 
     GOOGLE_AI_API_KEY : str = None

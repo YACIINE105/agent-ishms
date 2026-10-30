@@ -185,33 +185,4 @@ Evaluated against the frozen 20-question benchmark (`eval/questions.jsonl`):
 
 *Detailed question-by-question analysis, confusion matrices, and error logs are documented in [`docs/EVALUATION_REPORT.md`](docs/EVALUATION_REPORT.md).*
 
----
 
-## 6. Plan & Retrospective
-
-### How Time Was Organized
-- **Day 1: Ingestion & Provenance Architecture**  
-  Database schema migration (`agent-ishms`), PostgreSQL pgvector setup, Qalam PDF table extraction, CSV row parsing, and corpus indexing.
-- **Day 2: Grounded Bilingual Voice & Observability**  
-  LiveKit voice worker implementation, Groq Whisper bilingual STT, Edge/HeyGen TTS provider factory, barge-in interruption handling, and Langfuse tracing instrumentation.
-- **Day 3: Latency Optimization, Evaluation & Delivery**  
-  Diagnosis of cold-start and tool-loop latency regressions, implementation of worker pre-warming, cascading LLM fallback (`a2agent` $\rightarrow$ `google` $\rightarrow$ `openrouter`), 20-question automated evaluation harness, and documentation.
-
-### What Was Cut and Why
-- **Local Neural Weights (CrossEncoder)**: Disabled local reranker loading in `src/main.py` to strictly respect the 4 GB RAM budget (Decision D005).
-- **Secondary Vector Databases (Qdrant)**: Disabled and archived Qdrant implementations to maintain a single authoritative, reliable vector store in PostgreSQL `pgvector`.
-- **Iterative Tool Calling Loops**: Capped `max_tool_steps=1` in `AgentSession` and enforced prompt constraints to prevent unconstrained LLMs from triggering infinite search loops, ensuring real-time voice latency.
-
----
-
-## 7. Submission Deliverables Checklist
-
-- [x] **D1 — README**: Complete fresh-clone setup, architecture diagram, key decisions, and run guide.
-- [x] **D2 — Evaluation Report**: 20-question evaluation benchmark with verified Hit@1, MRR, Groundedness, and Refusal rates in [`docs/EVALUATION_REPORT.md`](docs/EVALUATION_REPORT.md).
-- [x] **D3 — Observability**: End-to-end Langfuse tracing covering STT, tool calls, RAG retrieval, LLM generation, and latency metrics.
-- [x] **R1 — Multi-format Ingestion**: PDF with complex tables (`FEPS_student_handbook.pdf`), TXT administrative FAQs (`student_services_faq.txt`), and CSV tabular data (`diversity_school.csv`).
-- [x] **R2 — Grounded RAG with Citations**: Granular citations (`[S1]`, page/row numbers) and strict zero-hit refusal.
-- [x] **R3 — Bilingual LiveKit Voice Agent**: Real-time spoken English and Arabic with barge-in interruption, question correction, and Whisper bilingual language guard.
-- [x] **B1 — Bonus OCR Fallback**: Automated fallback triggering the OCR.space REST API whenever Qalam returns `needs_ocr` for scanned or low-quality Arabic/English PDF pages.
-- [ ] **D4 — Demo Video**: 3 to 5 minute screen recording showing voice interaction, barge-in, question correction, and Langfuse trace walkthrough.
-- [ ] **Langfuse Access**: Export shared trace link or provide project invitation.

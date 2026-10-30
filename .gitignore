@@ -18,4 +18,8 @@ src/stores/llm/rerankers/test.py
 .pytest_cache/
 __pycache__/
 *.pyc
-
+.venv/
+.venv
+src/stores/llm/SPEC.md
+.coverage
+src/ingestion/SPEC.md
