@@ -1,1 +1,1 @@
-from .cross_encoder_reranker import CrossEncoderReranker
+from .cohere_reranker import CohereReranker

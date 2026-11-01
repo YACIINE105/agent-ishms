@@ -1,0 +1,414 @@
+[
+  {
+    "id": 1,
+    "language": "en",
+    "format": "txt",
+    "query": "Where is the Office of Student Records and Document Verification located at FEPS?",
+    "ground_truth_answer": "The Office of Student Records and Document Verification is located in the Main Administration Building, Ground Floor, Room 104.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["Main Administration Building", "Ground Floor", "Room 104"]
+  },
+  {
+    "id": 2,
+    "language": "en",
+    "format": "txt",
+    "query": "What is the standard fee and processing time for an official academic transcript at FEPS?",
+    "ground_truth_answer": "An official academic transcript costs 100 EGP per copy and is issued within 3 to 5 business days.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["100 EGP", "3 to 5 business days"]
+  },
+  {
+    "id": 3,
+    "language": "en",
+    "format": "txt",
+    "query": "What is the tuition refund percentage if a student drops during the second week of classes?",
+    "ground_truth_answer": "During the second week of classes (Week 2), the student is eligible for a 50% refund of paid tuition fees.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["second week", "50% refund"]
+  },
+  {
+    "id": 4,
+    "language": "en",
+    "format": "txt",
+    "query": "What is the non-refundable administrative registration fee deducted for refunds requested prior to the first day of classes?",
+    "ground_truth_answer": "The non-refundable administrative registration fee deducted is 200 EGP.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["non-refundable administrative registration fee", "200 EGP"]
+  },
+  {
+    "id": 5,
+    "language": "en",
+    "format": "txt",
+    "query": "How many business days does it take to disburse approved fee refunds to a student's bank account?",
+    "ground_truth_answer": "Approved refunds are disbursed within 15 to 20 business days.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["15 to 20 business days"]
+  },
+  {
+    "id": 6,
+    "language": "en",
+    "format": "txt",
+    "query": "What is the replacement fee and turnaround time for a lost student ID card at FEPS?",
+    "ground_truth_answer": "The replacement fee for a lost student ID card is 150 EGP, and it is ready for pickup within 48 business hours.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["150 EGP", "48 business hours"]
+  },
+  {
+    "id": 7,
+    "language": "en",
+    "format": "txt",
+    "query": "What is the minimum lecture attendance percentage required to avoid being barred from final exams?",
+    "ground_truth_answer": "Students must attend at least 75% of scheduled contact hours; exceeding 25% unexcused absences results in examination deprivation.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["75%", "25%"]
+  },
+  {
+    "id": 8,
+    "language": "en",
+    "format": "txt",
+    "query": "Within how many calendar days must a final semester grade appeal be submitted, and what is the fee per course?",
+    "ground_truth_answer": "Appeals must be filed within 10 calendar days following official publication, with a deposit fee of 100 EGP per course.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["10 calendar days", "100 EGP"]
+  },
+  {
+    "id": 9,
+    "language": "en",
+    "format": "txt",
+    "query": "What are the undergraduate borrowing privileges and loan duration at the FEPS faculty library?",
+    "ground_truth_answer": "Undergraduate students can borrow up to 3 books for a loan period of 14 calendar days.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["up to 3 books", "14 calendar days"]
+  },
+  {
+    "id": 10,
+    "language": "en",
+    "format": "txt",
+    "query": "What is the annual rental fee and key security deposit for campus lockers in Building A?",
+    "ground_truth_answer": "The annual rental fee is 200 EGP (non-refundable), and the key security deposit is 100 EGP (refundable upon return).",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["200 EGP", "100 EGP"]
+  },
+  {
+    "id": 11,
+    "language": "en",
+    "format": "pdf",
+    "query": "According to the FEPS Credit Hours Handbook, what traditional grade corresponds to a CGPA between 3.6 and 4.0?",
+    "ground_truth_answer": "A cumulative point average from 3.6 to 4.0 corresponds to an 'Excellent' grade.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 34,
+    "is_answerable": true,
+    "facts": ["3.6 to 4.0", "Excellent"]
+  },
+  {
+    "id": 12,
+    "language": "en",
+    "format": "pdf",
+    "query": "What are the graduation rounds available for Credit Hours System students at FEPS?",
+    "ground_truth_answer": "Graduation rounds for credit hour students are the January round, May round, and August round.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 34,
+    "is_answerable": true,
+    "facts": ["January round", "May round", "August round"]
+  },
+  {
+    "id": 13,
+    "language": "en",
+    "format": "pdf",
+    "query": "What CGPA qualifies an enrolled student for a 25% tuition fee exemption starting the following semester?",
+    "ground_truth_answer": "A student who obtains a cumulative point average of 3.7 or higher is exempted from 25% of tuition fees starting from the next semester.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 34,
+    "is_answerable": true,
+    "facts": ["3.7 or higher", "25% of tuition fees"]
+  },
+  {
+    "id": 14,
+    "language": "en",
+    "format": "pdf",
+    "query": "By what percentage does the credit hour tuition increase during the summer semester?",
+    "ground_truth_answer": "The value of the credit hour in the summer semester increases by 50% from its value in the main semester.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 34,
+    "is_answerable": true,
+    "facts": ["increases by 50%"]
+  },
+  {
+    "id": 15,
+    "language": "en",
+    "format": "pdf",
+    "query": "What fine is imposed on language division students if tuition payment is delayed past the sixteenth week?",
+    "ground_truth_answer": "Students late starting from the sixteenth week pay a fine of 20% of the tuition fees.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 35,
+    "is_answerable": true,
+    "facts": ["sixteenth week", "20%"]
+  },
+  {
+    "id": 16,
+    "language": "en",
+    "format": "pdf",
+    "query": "What prerequisite course is required to enroll in course E309 Environmental Economics?",
+    "ground_truth_answer": "Course E309 Environmental Economics requires prerequisite course E202.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 41,
+    "is_answerable": true,
+    "facts": ["E309", "E202"]
+  },
+  {
+    "id": 17,
+    "language": "en",
+    "format": "csv",
+    "query": "According to diversity statistics, what is the total enrollment and state for University of Phoenix-Arizona?",
+    "ground_truth_answer": "University of Phoenix-Arizona has a total enrollment of 195,059 students and is located in Arizona.",
+    "expected_source": "diversity_school.csv",
+    "expected_row": 1,
+    "is_answerable": true,
+    "facts": ["195,059", "Arizona"]
+  },
+  {
+    "id": 18,
+    "language": "en",
+    "format": "csv",
+    "query": "What is the reported Women enrollment count for Ivy Tech Community College-Central Indiana?",
+    "ground_truth_answer": "The Women enrollment count for Ivy Tech Community College-Central Indiana is 53,476.",
+    "expected_source": "diversity_school.csv",
+    "expected_row": 12,
+    "is_answerable": true,
+    "facts": ["Ivy Tech Community College-Central Indiana", "53,476"]
+  },
+  {
+    "id": 19,
+    "language": "en",
+    "format": "csv",
+    "query": "What is the Total Minority enrollment reported for Liberty University in Virginia?",
+    "ground_truth_answer": "Liberty University in Virginia reports a Total Minority enrollment of 19,163 students.",
+    "expected_source": "diversity_school.csv",
+    "expected_row": 33,
+    "is_answerable": true,
+    "facts": ["Liberty University", "19,163"]
+  },
+  {
+    "id": 20,
+    "language": "en",
+    "format": "csv",
+    "query": "In the diversity dataset, what is the state and Women enrollment for Lone Star College system?",
+    "ground_truth_answer": "Lone Star College system is located in Texas with a reported Women enrollment of 41,268.",
+    "expected_source": "diversity_school.csv",
+    "expected_row": 34,
+    "is_answerable": true,
+    "facts": ["Texas", "41,268"]
+  },
+  {
+    "id": 21,
+    "language": "ar",
+    "format": "txt",
+    "query": "أين يقع مقر إدارة شؤون الطلاب والسجلات في كلية الاقتصاد والعلوم السياسية بجامعة القاهرة؟",
+    "ground_truth_answer": "يقع مقر إدارة شؤون الطلاب والسجلات بالمبنى الإداري الرئيسي، الدور الأرضي، غرفة 104.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["المبنى الإداري الرئيسي", "الدور الأرضي", "غرفة 104"]
+  },
+  {
+    "id": 22,
+    "language": "ar",
+    "format": "txt",
+    "query": "كم تبلغ الرسوم العادية لاستخراج بيان الدرجات الأكاديمي (السجل الدراسي) بالكلية؟",
+    "ground_truth_answer": "تبلغ الرسوم العادية لاستخراج بيان الدرجات الأكاديمي 100 جنيه مصري لكل نسخة.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["100 جنيه", "بيان الدرجات"]
+  },
+  {
+    "id": 23,
+    "language": "ar",
+    "format": "txt",
+    "query": "ما هي نسبة استرداد الرسوم الدراسية في حال الانسحاب خلال الأسبوع الأول من بدء الدراسة؟",
+    "ground_truth_answer": "يستحق الطالب استرداد 75% من المصروفات الدراسية المسددة في حال الانسحاب خلال الأسبوع الأول من الدراسة.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["الأسبوع الأول", "75%"]
+  },
+  {
+    "id": 24,
+    "language": "ar",
+    "format": "txt",
+    "query": "ما هو مصير طلبات استرداد المصروفات المقدمة بعد نهاية الأسبوع الثاني من بدء الدراسة؟",
+    "ground_truth_answer": "لا يمكن استرداد أي رسوم دراسية (0%) بعد نهاية الأسبوع الثاني من بدء الدراسة تحت أي ظرف.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["الأسبوع الثاني", "0%"]
+  },
+  {
+    "id": 25,
+    "language": "ar",
+    "format": "txt",
+    "query": "ما هي رسوم استخراج بطاقة الطالب (كارنيه الكلية) بدل الفاقد؟",
+    "ground_truth_answer": "رسوم استخراج بطاقة الطالب بدل فاقد هي 150 جنيهاً مصرياً تسدد في خزينة الكلية.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["150", "بدل فاقد"]
+  },
+  {
+    "id": 26,
+    "language": "ar",
+    "format": "txt",
+    "query": "أين يتلقى طلاب كلية الاقتصاد والعلوم السياسية الرعاية الطبية والعلاج المجاني؟",
+    "ground_truth_answer": "يتلقى الطلاب الرعاية الطبية في مستشفى الطلبة التابع لجامعة القاهرة بمحافظة الجيزة بموجب كارنيه الكلية الساري.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["مستشفى الطلبة", "جامعة القاهرة"]
+  },
+  {
+    "id": 27,
+    "language": "ar",
+    "format": "txt",
+    "query": "خلال كم ساعة يجب اعتماد الشهادات والإجازات المرضية من مستشفى الطلبة عند الغياب عن الامتحانات؟",
+    "ground_truth_answer": "يجب اعتماد العذر الطبي من مستشفى الطلبة بجامعة القاهرة خلال 48 ساعة من تاريخ المرض.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["48 ساعة", "مستشفى الطلبة"]
+  },
+  {
+    "id": 28,
+    "language": "ar",
+    "format": "txt",
+    "query": "كم تبلغ غرامة التأخير عن إعادة الكتب المستعارة من مكتبة الكلية؟",
+    "ground_truth_answer": "تبلغ غرامة التأخير 5 جنيهات مصرية عن كل كتاب عن كل يوم عمل تأخير.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["5 جنيهات", "يوم عمل"]
+  },
+  {
+    "id": 29,
+    "language": "ar",
+    "format": "txt",
+    "query": "ما هي مهلة تقديم الالتماس وإعادة رصد الدرجات بعد إعلان النتائج الرسمية للامتحانات؟",
+    "ground_truth_answer": "مهلة تقديم التظلم والالتماس هي 10 أيام تقويمية من تاريخ إعلان النتائج على البوابة الإلكترونية.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["10 أيام", "إعلان النتائج"]
+  },
+  {
+    "id": 30,
+    "language": "ar",
+    "format": "txt",
+    "query": "هل تسترد رسوم الالتماس (100 جنيه) إذا تبين وجود خطأ في رصد درجات الطالب؟",
+    "ground_truth_answer": "نعم، تسترد رسوم الالتماس البالغة 100 جنيه بالكامل إلى الطالب في حال ثبوت خطأ أدى لتعديل الدرجة بالزيادة.",
+    "expected_source": "student_services_faq.txt",
+    "is_answerable": true,
+    "facts": ["100 جنيه", "تسترد"]
+  },
+  {
+    "id": 31,
+    "language": "ar",
+    "format": "pdf",
+    "query": "ما هو التقدير التقليدي المقابل للمعدل التراكمي (CGPA) من 3.2 إلى أقل من 3.6 في نظام الساعات المعتمدة بكلية الاقتصاد؟",
+    "ground_truth_answer": "المعدل التراكمي من 3.2 إلى أقل من 3.6 يعادل التقدير التقليدي 'جيد جداً' (Very good).",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 34,
+    "is_answerable": true,
+    "facts": ["3.2 إلى أقل من 3.6", "جيد جداً"]
+  },
+  {
+    "id": 32,
+    "language": "ar",
+    "format": "pdf",
+    "query": "ما هو التقدير المقابل للمعدل التراكمي من 2.6 إلى أقل من 3.2 في دليل طالب كلية الاقتصاد والعلوم السياسية؟",
+    "ground_truth_answer": "المعدل التراكمي من 2.6 إلى أقل من 3.2 يقابله تقدير 'جيد' (Good).",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 34,
+    "is_answerable": true,
+    "facts": ["2.6 إلى أقل من 3.2", "جيد"]
+  },
+  {
+    "id": 33,
+    "language": "ar",
+    "format": "pdf",
+    "query": "ما هي أدوار التخرج المتاحة لطلاب نظام الساعات المعتمدة في الكلية؟",
+    "ground_truth_answer": "أدوار التخرج لطلاب الساعات المعتمدة هي دور يناير، ودور مايو، ودور أغسطس.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 34,
+    "is_answerable": true,
+    "facts": ["دور يناير", "دور مايو", "دور أغسطس"]
+  },
+  {
+    "id": 34,
+    "language": "ar",
+    "format": "pdf",
+    "query": "ما هي نسبة الإعفاء من المصروفات التي يحصل عليها الطالب الحاصل على معدل 3.7 أو أكثر؟",
+    "ground_truth_answer": "يحصل الطالب الحاصل على معدل تراكمي 3.7 أو أعلى على إعفاء بنسبة 25% من الرسوم الدراسية للفصل التالي.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 34,
+    "is_answerable": true,
+    "facts": ["3.7", "25%"]
+  },
+  {
+    "id": 35,
+    "language": "ar",
+    "format": "pdf",
+    "query": "كم تبلغ غرامة التأخير في سداد المصروفات لشعب اللغات إذا تأخر الطالب بعد الأسبوع السادس عشر؟",
+    "ground_truth_answer": "تبلغ غرامة التأخير في سداد المصروفات بعد الأسبوع السادس عشر 20% من الرسوم الدراسية.",
+    "expected_source": "FEPS_student_handbook.pdf",
+    "expected_page": 35,
+    "is_answerable": true,
+    "facts": ["السادس عشر", "20%"]
+  },
+  {
+    "id": 36,
+    "language": "ar",
+    "format": "csv",
+    "query": "وفقاً لبيانات التسجيل الجامعي، كم يبلغ إجمالي عدد الطلاب المسجلين في جامعة فينكس بأريزونا؟",
+    "ground_truth_answer": "يبلغ إجمالي عدد الطلاب المسجلين في جامعة فينكس بأريزونا 195,059 طالباً.",
+    "expected_source": "diversity_school.csv",
+    "expected_row": 1,
+    "is_answerable": true,
+    "facts": ["195,059"]
+  },
+  {
+    "id": 37,
+    "language": "en",
+    "format": "none",
+    "query": "How do I replace the hydraulic brake pads on a supersonic jet aircraft?",
+    "ground_truth_answer": "The provided documents do not contain information to answer this question.",
+    "is_answerable": false,
+    "facts": []
+  },
+  {
+    "id": 38,
+    "language": "en",
+    "format": "none",
+    "query": "What are the chemical fertilizers used for growing cocoa beans in the Amazon rainforest?",
+    "ground_truth_answer": "The provided documents do not contain information to answer this question.",
+    "is_answerable": false,
+    "facts": []
+  },
+  {
+    "id": 39,
+    "language": "ar",
+    "format": "none",
+    "query": "كيف يمكن صيانة محركات الديزل الثقيلة في السفن التجارية؟",
+    "ground_truth_answer": "المستندات المقدمة لا تحتوي على معلومات للإجابة على هذا السؤال.",
+    "is_answerable": false,
+    "facts": []
+  },
+  {
+    "id": 40,
+    "language": "ar",
+    "format": "none",
+    "query": "ما هي درجات الحرارة القياسية المسجلة في القطب الشمالي خلال فصل الشتاء؟",
+    "ground_truth_answer": "المستندات المقدمة لا تحتوي على معلومات للإجابة على هذا السؤال.",
+    "is_answerable": false,
+    "facts": []
+  }
+]

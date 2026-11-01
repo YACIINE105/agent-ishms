@@ -110,16 +110,18 @@ class QdrantDBProvider(VectorDBInterface):
 
         return True
 
-    async def search_by_vector(self, collection_name: str, vector: list, limit: int = 5):
+    async def search_by_vector(self, collection_name: str, vector: list, k: int = 5, limit: int = None):
+        top_k = limit if limit is not None else k
         results = self.client.query_points(
             collection_name=collection_name,
             query=vector,
-            limit=limit,
+            limit=top_k,
         )
 
         return [RetrievedDocuments(
                     text=result.payload['text'], 
-                    score=result.score
-                ).model_dump()
+                    score=result.score,
+                    metadata=result.payload.get('metadata')
+                )
                 for result in results.points
             ]

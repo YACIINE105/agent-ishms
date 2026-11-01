@@ -112,31 +112,40 @@ class NLPController(BaseController):
                 return 'ar'
         return 'en'
 
-    async def answer_rag_query(self, project: Project, query: str, limit: int = 5, max_output_tokens: int = 1200):
+    async def answer_rag_query(self, project: Project, query: str, limit: int = 5, min_similarity_score: float = 0.40, max_output_tokens: int = 1200):
         lang = self.detect_language(query)
         if self.template_parser:
             self.template_parser.set_language(lang)
 
         retrieved_docs = await self.search_vector_db_collection(project=project, text=query, limit=limit)
 
+        refusal_msg = (
+            "لا تتوفر لدي معلومات كافية في المستندات المقدمة للإجابة على هذا السؤال."
+            if lang == 'ar'
+            else "I do not have sufficient information in the provided documents to answer this question."
+        )
         if not retrieved_docs or len(retrieved_docs) == 0:
-            refusal_msg = (
-                "لا تتوفر لدي معلومات كافية في المستندات المقدمة للإجابة على هذا السؤال."
-                if lang == 'ar'
-                else "I do not have sufficient information in the provided documents to answer this question."
-            )
+            self.last_citations = []
             return refusal_msg, "", []
 
+        # Dual Gating: 1. Relevance score gate: top_score < 0.40 immediately returns refusal
+        top_score = max(((getattr(d, "score", 0.0) or 0.0) for d in retrieved_docs), default=0.0)
+        if top_score < min_similarity_score:
+            self.last_citations = []
+            return refusal_msg, "", []
         doc_prompts = []
+        citations = []
         for i, doc in enumerate(retrieved_docs):
             meta = doc.metadata or {}
             source_id = f"S{i+1}"
-            source_name = meta.get("source_name", "unknown")
+            source_doc = meta.get("source_document") or meta.get("source_name", "unknown")
 
-            if "page" in meta:
-                location = f"Page {meta['page']}"
-            elif "row" in meta:
-                location = f"Row {meta['row']}"
+            page_val = meta.get("page_number") or meta.get("page")
+            row_val = meta.get("row_index") or meta.get("row")
+            if page_val is not None:
+                location = f"Page {page_val}"
+            elif row_val is not None:
+                location = f"Row {row_val}"
             else:
                 location = "N/A"
 
@@ -144,12 +153,21 @@ class NLPController(BaseController):
                 "rag", "document_prompt",
                 {
                     "source_id": source_id,
-                    "source_name": source_name,
+                    "source_name": source_doc,
                     "location": location,
                     "chunk_text": doc.text
                 }
             )
             doc_prompts.append(doc_prompt)
+            citations.append({
+                "source_id": source_id,
+                "source_document": source_doc,
+                "file_format": meta.get("file_format") or meta.get("source_format"),
+                "page_number": meta.get("page_number") or meta.get("page"),
+                "row_index": meta.get("row_index") or meta.get("row"),
+                "table_id": meta.get("table_id"),
+                "score": doc.score
+            })
 
         document_context = "\n".join(doc_prompts)
         system_prompt = self.template_parser.get("rag", "system_prompt")
@@ -176,10 +194,8 @@ class NLPController(BaseController):
             max_output_token=max_output_tokens
         )
 
+        self.last_citations = citations
         return answer, full_prompt, chat_history
-
-    def get_conversation_history(project:Project, conversation_id):
-        pass
 
     def save_chat_turn(self, project_id:str, chat_history:list):
         all_collection =  self.db_client.list_collection_names()

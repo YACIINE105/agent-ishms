@@ -1,5 +1,16 @@
 import logging
 import edge_tts
+
+# OpenTelemetry 1.45+ SDK compatibility bridge for livekit-agents 1.3 telemetry
+try:
+    import opentelemetry.sdk._logs as _otel_logs
+    if not hasattr(_otel_logs, "LogData") and hasattr(_otel_logs, "ReadableLogRecord"):
+        _otel_logs.LogData = _otel_logs.ReadableLogRecord
+    if not hasattr(_otel_logs, "LogRecord") and hasattr(_otel_logs, "ReadWriteLogRecord"):
+        _otel_logs.LogRecord = _otel_logs.ReadWriteLogRecord
+except Exception:
+    pass
+
 import livekit.agents as la
 from livekit.agents import tts
 from ..TTSInterface import TTS_Interface

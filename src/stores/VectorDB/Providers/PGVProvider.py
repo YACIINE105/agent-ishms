@@ -1,7 +1,6 @@
 from ..VectorDBinterface import VectorDBInterface
 from ..VectorDBEnums import (PGVectorDistanceMethodEnums, DistanceMethodEnums,
                              PGVectorTableSchemeEnums, PGVectorIndexTypeEnums)
-from qdrant_client import models, QdrantClient
 import logging
 from typing import List
 from models.db_schems import RetrievedDocuments

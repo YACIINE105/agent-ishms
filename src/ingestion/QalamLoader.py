@@ -38,9 +38,12 @@ class QalamLoader:
 
             page_metadata = {
                 "source": self.file_path,
+                "source_document": os.path.basename(self.file_path),
                 "source_name": os.path.basename(self.file_path),
+                "file_format": "pdf",
                 "source_format": "pdf",
                 "page": page.number,
+                "page_number": page.number,
                 "total_pages": len(pdf_document),
                 "parser": "qalam",
                 "verdict": page.verdict,
@@ -50,7 +53,6 @@ class QalamLoader:
                 "tables": tables,
                 "ocr_applied": False,
             }
-
             if page.needs_ocr and self.enable_ocr:
                 ocr_text, ocr_meta = ocr_space_extract_page(
                     pdf_path=self.file_path,

@@ -7,15 +7,25 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 src_path = Path(__file__).resolve().parent.parent
-if str(src_path) not in sys.path:
-    sys.path.insert(0, str(src_path))
-
 root_dir = src_path.parent
+# Ensure workspace-4 src takes absolute precedence over any globally linked worktrees
+sys.path = [str(src_path)] + [p for p in sys.path if "4d-space/src" not in p and p != str(src_path)]
+if "voice" in sys.modules:
+    del sys.modules["voice"]
 env_voice_path = root_dir / ".env.voice"
 if env_voice_path.exists():
     load_dotenv(dotenv_path=env_voice_path)
-
 load_dotenv(dotenv_path=src_path / ".env")
+
+# OpenTelemetry 1.45+ SDK compatibility bridge for livekit-agents 1.3 telemetry
+try:
+    import opentelemetry.sdk._logs as _otel_logs
+    if not hasattr(_otel_logs, "LogData") and hasattr(_otel_logs, "ReadableLogRecord"):
+        _otel_logs.LogData = _otel_logs.ReadableLogRecord
+    if not hasattr(_otel_logs, "LogRecord") and hasattr(_otel_logs, "ReadWriteLogRecord"):
+        _otel_logs.LogRecord = _otel_logs.ReadWriteLogRecord
+except Exception:
+    pass
 
 from livekit.agents import (
     AutoSubscribe,
@@ -220,12 +230,11 @@ async def entrypoint(ctx: JobContext):
         llm=llm_engine,
         tts=livekit_tts,
         max_tool_steps=1,
-        turn_handling={
-            "endpointing": {"min_delay": 0.15, "max_delay": 0.4},
-            "preemptive_generation": {"enabled": True},
-        },
+        allow_interruptions=True,
+        min_endpointing_delay=0.15,
+        max_endpointing_delay=0.4,
+        preemptive_generation=True,
     )
-
     @session.on("user_input_transcribed")
     def on_user_speech(ev):
         if ev.is_final and ev.transcript:

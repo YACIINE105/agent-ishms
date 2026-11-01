@@ -20,9 +20,9 @@ def create_knowledge_base_rag_tool(
     """
     tool_desc = (
         f"Query the official verified knowledge base for '{project_name}'. "
-        f"Retrieves grounded facts, regulations, and citations strictly bounded to {project_domain}."
+        f"Retrieves grounded facts, regulations, and citations strictly bounded to {project_domain}. "
+        "Pass the user's natural query directly without rephrasing or translating into other languages."
     )
-
     @llm.function_tool(description=tool_desc)
     async def knowledge_base_rag(query: str) -> str:
         """Execute full RAG with document citations and honest refusals."""
@@ -73,20 +73,24 @@ def create_knowledge_base_rag_tool(
                 turn_context["last_rag_answer"] = answer
                 turn_context["last_sources_cited"] = sources_cited
 
+            is_abstention = (not full_prompt) or ("لا تتوفر لدي معلومات" in (answer or "")) or ("do not have sufficient information" in (answer or "").lower())
+            abstention_reason = "score_below_threshold" if is_abstention else None
+
             if span:
-                span.update(
-                    output={
-                        "status": "answered" if full_prompt else "insufficient_evidence",
-                        "duration_ms": duration_ms,
-                        "answer_preview": (answer or "")[:150],
-                        "sources_cited": sources_cited,
-                    }
-                )
+                output_meta = {
+                    "status": "answered" if not is_abstention else "abstention_refusal",
+                    "duration_ms": duration_ms,
+                    "answer_preview": (answer or "")[:150],
+                    "sources_cited": sources_cited,
+                    "abstention_triggered": is_abstention,
+                }
+                if abstention_reason:
+                    output_meta["abstention_reason"] = abstention_reason
+                span.update(output=output_meta)
                 span.end()
 
-            if not full_prompt:
+            if is_abstention:
                 return f"NO_EVIDENCE_FOUND: {answer}"
-
             return f"Verified Project Answer:\n{answer}"
 
         except Exception as e:

@@ -50,7 +50,7 @@ def build_system_instructions(persona: dict) -> str:
         "Core Operational Rules:\n"
         f"1. You ONLY assist with questions within the domain of '{p_name}'.\n"
         "2. For ANY question requiring facts, policies, or specific information, you MUST call "
-        "the 'knowledge_base_rag' tool to retrieve verified facts from this project. Call the tool AT MOST ONCE per user turn.\n"
+        "the 'knowledge_base_rag' tool. CRITICAL: Pass the EXACT original user query to the tool in the user's language without translating, rephrasing into English/Chinese, or adding foreign words. Call the tool AT MOST ONCE per user turn.\n"
         "3. Once 'knowledge_base_rag' returns an answer, do NOT call any more tools. Immediately formulate your spoken response and speak to the user.\n"
         "4. Base your answer SOLELY on the verified RAG answer and state citations naturally (e.g. 'وفقاً للمرجع [S1]...' in Arabic, or 'According to [S1]...' in English).\n"
         "5. Keep the original language of the verified RAG answer. Do NOT translate Arabic facts into English.\n"
