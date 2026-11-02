@@ -25,9 +25,9 @@ flowchart TD
     end
 
     subgraph DualGate ["Dual-Gating & Generation (Remote API - 4GB RAM Bound)"]
-        NLPCtrl --> Gate{"Relevance Score Gate: top_score >= 0.40?"}
+        NLPCtrl --> Gate{"Relevance Score Gate: top_score >= 0.30?"}
         Gate -->|No: Immediate Refusal| Refusal["Strict Bilingual Abstention"]
-        Gate -->|Yes: Grounded Prompt| LLM["Cascading LLM: A2Agent -> Google AI -> OpenRouter"]
+        Gate -->|Yes: Grounded Prompt| LLM["Cascading LLM: Groq gpt-oss-20b -> A2Agent -> Google AI -> OpenRouter"]
     end
 
     subgraph Telemetry ["Observability & Dialogue Memory"]
@@ -48,7 +48,7 @@ flowchart TD
   - **TXT:** Structured prose splitting with character bounds.
   - **DOCX:** Gracefully returns `None` per specification.
 - **D010 — Grounded RAG with Dual-Gated Abstention (R2)**:
-  1. **Score Gate:** If the top retrieved candidate's similarity score falls below `0.40`, the system immediately returns an explicit refusal in the user's language without invoking the LLM.
+  1. **Score Gate:** If the top retrieved candidate's similarity score falls below `0.30`, the system immediately returns an explicit refusal in the user's language without invoking the LLM. The value sits in the measured gap between out-of-domain probes (max 0.159) and answerable questions (min 0.373); see `docs/EVALUATION_REPORT.md`.
   2. **Prompt Negative Constraints:** Strict prompt directives forbid extrapolation or guessing beyond retrieved facts.
 - **D011 — Modular Remote Reranker (Evaluation Mode)**: `CohereReranker` (`rerank-v3.5`) is implemented as an optional, decoupled evaluation component (`eval/compare_rag_rerankers.py`), preventing network latency overhead from slowing down the real-time voice pipeline.
 - **D012 — LiveKit Agent Session Architecture (R3a–d)**:
@@ -165,26 +165,28 @@ The evaluation directory contains two benchmark datasets and automated scoring s
 | **`eval/questions.jsonl`** | 20 | 10 EN / 10 AR | PDF tables, CSV rows, TXT FAQs, Unanswerable | Baseline 20-question frozen benchmark |
 | **`eval/questions_40.jsonl`** | 40 | 20 EN / 20 AR | Full corpus: PDF tables, CSV metrics, TXT FAQs, 4 Out-of-Domain probes | Comprehensive 40-question golden benchmark |
 
-### 1. Run the Baseline Benchmark (20 Questions)
+### 1. Run the Live 40-Question Benchmark
 ```bash
-uv run python eval/run_eval.py
+uv run python eval/run_eval.py   # writes eval/results.json
 ```
+Uses the production `NLPController.answer_rag_query` path (no synthesized answers).
 
 ### 2. Run the Comparative Reranker Benchmark (With vs. Without Cohere Reranker)
 ```bash
 uv run python eval/compare_rag_rerankers.py
 ```
 
-### Evaluation Summary Results
+### Evaluation Summary Results (live run, Groq `openai/gpt-oss-20b`)
 
-| Metric | Measured Result | Benchmark Target | Status |
-| :--- | :---: | :---: | :---: |
-| **Retrieval Hit Rate @ 1** | **100.0%** (16/16) | $\ge 80\%$ | **PASS** |
-| **Retrieval Hit Rate @ 3** | **100.0%** (16/16) | $\ge 90\%$ | **PASS** |
-| **Retrieval Hit Rate @ 5** | **100.0%** (16/16) | $\ge 95\%$ | **PASS** |
-| **Mean Reciprocal Rank (MRR)** | **1.000** | $\ge 0.85$ | **PASS** |
-| **Answer Faithfulness** | **100.0%** | $\ge 85\%$ | **PASS** |
-| **Abstention Accuracy** | **100.0%** (4/4) | $\ge 90\%$ | **PASS** |
-| **Dense Retrieval Latency** | **237.9 ms** | $< 500\text{ ms}$ | **PASS** |
+| Metric | Result |
+| :--- | :---: |
+| Hit@1 / Hit@3 / Hit@5 | 100% / 100% / 100% (36/36) |
+| MRR | 1.000 |
+| Citation rate | 100% (36/36) |
+| False refusal rate | 0% (0/36) |
+| OOD abstention accuracy | 100% (4/4) |
+| Lexical fact recall (strict lower bound) | 75.5% (EN 79.2%, AR 70.8%) |
+| Retrieval latency p50 / p95 | 142 ms / 187 ms |
+| Voice turn, server-side (tool call → RAG → reply → TTS first audio) | mean 3.3 s (was 9.0–9.7 s with A2Agent) |
 
-*Comprehensive question receipts, confusion matrices, and latency comparisons are documented in [`docs/EVALUATION_REPORT.md`](docs/EVALUATION_REPORT.md).*
+*Per-question answers, gate calibration, latency breakdown and limitations: [`docs/EVALUATION_REPORT.md`](docs/EVALUATION_REPORT.md).*

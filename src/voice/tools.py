@@ -13,6 +13,7 @@ def create_knowledge_base_rag_tool(
     langfuse=None,
     session_id: str = "",
     turn_context: dict | None = None,
+    session_ref: list | None = None,
 ):
     """
     Factory creating a LiveKit function tool that invokes the project's full
@@ -27,6 +28,16 @@ def create_knowledge_base_rag_tool(
     async def knowledge_base_rag(query: str) -> str:
         """Execute full RAG with document citations and honest refusals."""
         t0 = time.time()
+
+        # Announce immediate search phrase while RAG executes
+        is_arabic = any("\u0600" <= ch <= "\u06FF" for ch in query)
+        announcement = "لحظة من فضلك، أبحث في المستندات الرسمية..." if is_arabic else "Searching the official documents for you now..."
+        if session_ref and session_ref[0] and hasattr(session_ref[0], "say"):
+            try:
+                session_ref[0].say(announcement, allow_interruptions=True, add_to_chat_ctx=False)
+            except Exception as e:
+                logger.debug(f"Spoken announcement skipped: {e}")
+
         if turn_context is not None:
             turn_context.update(last_rag_query=query, last_rag_answer=None, last_sources_cited=[])
         span = None
@@ -37,7 +48,6 @@ def create_knowledge_base_rag_tool(
                 input={"query": query, "project_id": project_id, "session_id": session_id},
                 metadata={"project_id": project_id, "backend": "pgvector_rag"},
             )
-
         if not nlp_controller:
             msg = "RAG_SERVICE_ERROR: The knowledge-base service is temporarily unavailable. Please try again later."
             if span:

@@ -206,9 +206,8 @@ async def entrypoint(ctx: JobContext):
     )
     tts_provider = TTSProviderFactory().create()
     livekit_tts = tts_provider.get_livekit_tts()
-
     llm_engine = build_generation_llm()
-
+    agent_session_ref = [None]
     rag_tool = create_knowledge_base_rag_tool(
         project_id=project_id,
         project_name=persona["name"],
@@ -217,6 +216,7 @@ async def entrypoint(ctx: JobContext):
         langfuse=langfuse,
         session_id=session_id,
         turn_context=turn_context,
+        session_ref=agent_session_ref,
     )
 
     agent = Agent(
@@ -235,6 +235,7 @@ async def entrypoint(ctx: JobContext):
         max_endpointing_delay=0.4,
         preemptive_generation=True,
     )
+    agent_session_ref[0] = session
     @session.on("user_input_transcribed")
     def on_user_speech(ev):
         if ev.is_final and ev.transcript:

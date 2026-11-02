@@ -1,297 +1,2282 @@
 {
   "summary": {
-    "total_questions": 20,
-    "answerable": 16,
+    "total_questions": 40,
+    "answerable": 36,
     "unanswerable": 4,
-    "model": "minimax-m3.1-flash",
+    "generation_model": "GROQ:openai/gpt-oss-20b",
+    "embedding_model": "nvidia/nemotron-3-embed-1b",
     "hit_at_1_pct": 100.0,
     "hit_at_3_pct": 100.0,
     "hit_at_5_pct": 100.0,
     "mrr": 1.0,
-    "refusal_accuracy_pct": 75.0,
-    "groundedness_pct": 81.2,
-    "citation_rate_pct": 93.8
+    "mean_fact_recall_pct": 75.5,
+    "exact_fact_match_pct": 61.1,
+    "citation_rate_pct": 100.0,
+    "false_refusal_pct": 0.0,
+    "ood_refusal_accuracy_pct": 100.0,
+    "retrieval_ms_p50": 142.4,
+    "retrieval_ms_p95": 187.4,
+    "rag_end_to_end_ms_p50": 1593.7,
+    "rag_end_to_end_ms_p95": 9778.2,
+    "en_mean_fact_recall_pct": 79.2,
+    "ar_mean_fact_recall_pct": 70.8
   },
   "per_question_results": [
     {
       "id": "Q01",
       "language": "en",
       "answerable": true,
-      "question": "What cumulative GPA and percentage range correspond to an 'A' grade in the academic grading scale?",
-      "retrieval_hit": true,
+      "question": "Where is the Office of Student Records and Document Verification located at FEPS?",
       "hit_rank": 1,
-      "retrieval_time_s": 2.561,
-      "generation_time_s": 5.53,
-      "has_citations": true,
-      "is_refusal": true,
-      "grounded": false,
-      "generated_answer": "According to [S1], an **“A” (Excellent)** corresponds to a cumulative GPA of **3.6–4.0**. The provided context does not state the corresponding **percentage range**, so that cannot be determined from the evidence."
+      "top_score": 0.6058,
+      "retrieval_ms": 918.5,
+      "rag_end_to_end_ms": 748.4,
+      "refused": false,
+      "fact_recall": 0.3333333333333333,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6057958453799945
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4420921641601778
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4128030817789454
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4082523131351182
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3989067483583444
+        }
+      ],
+      "generated_answer": "The Office of Student Records & Verification is located in **Building A, Room 104** at FEPS. [S1]"
     },
     {
       "id": "Q02",
       "language": "en",
       "answerable": true,
-      "question": "What is the standard fee and processing time for issuing an official academic transcript?",
-      "retrieval_hit": true,
+      "question": "What is the standard fee and processing time for an official academic transcript at FEPS?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.343,
-      "generation_time_s": 2.126,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "According to [S1], an official academic transcript costs **100 EGP per copy** and is issued within **3–5 business days** after the request form is submitted."
+      "top_score": 0.5863,
+      "retrieval_ms": 155.1,
+      "rag_end_to_end_ms": 545.0,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5862733195497267
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4586918542378752
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4132986510064798
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3727878346106981
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.37086462547450383
+        }
+      ],
+      "generated_answer": "The standard fee for an official academic transcript at FEPS is **100 EGP per copy**, and it is typically issued within **3 to 5 business days** after the request form is submitted. [S1]"
     },
     {
       "id": "Q03",
       "language": "en",
       "answerable": true,
-      "question": "What is the replacement fee for a lost student ID card, and which office processes it?",
-      "retrieval_hit": true,
+      "question": "What is the tuition refund percentage if a student drops during the second week of classes?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.239,
-      "generation_time_s": 4.807,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "The replacement fee is **150 EGP**, paid at the **University Treasury**. The **Student Affairs Office (Room 101)** processes the replacement submission after you file a lost-item notification at the **Campus Security Office (Building A gate)**. [S1][S2]"
+      "top_score": 0.6894,
+      "retrieval_ms": 143.8,
+      "rag_end_to_end_ms": 776.7,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6894383519430356
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6341358989892046
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.44086590956505267
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.37831662847599135
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3643913477439231
+        }
+      ],
+      "generated_answer": "The tuition refund for a student who drops during the second week of classes is **50 %** of the paid tuition fees. This applies only while the second week is still in session; after that period no refunds are granted. [S1]"
     },
     {
       "id": "Q04",
       "language": "en",
       "answerable": true,
-      "question": "What is the maximum credit hour overload permissible per semester for students on the Dean's List?",
-      "retrieval_hit": true,
+      "question": "What is the non-refundable administrative registration fee deducted for refunds requested prior to the first day of classes?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.23,
-      "generation_time_s": 4.772,
-      "has_citations": false,
-      "is_refusal": false,
-      "grounded": false,
-      "generated_answer": "Students on the Dean’s List may register for **up to 21 credit hours per regular semester**, provided they have a cumulative GPA of at least **3.50** and receive approval from both their advisor and department chair (S1)."
+      "top_score": 0.655,
+      "retrieval_ms": 169.5,
+      "rag_end_to_end_ms": 619.4,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.655036512049686
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.475240598070803
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4538253637484988
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.42754379576657764
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.35075959399220613
+        }
+      ],
+      "generated_answer": "The fee is **200 EGP**. This amount is deducted from any refund requested before the official first day of classes. [S1]"
     },
     {
       "id": "Q05",
       "language": "en",
       "answerable": true,
-      "question": "According to the diversity enrollment dataset, how many female students are enrolled at the University of Phoenix-Arizona?",
-      "retrieval_hit": true,
+      "question": "How many business days does it take to disburse approved fee refunds to a student's bank account?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.25,
-      "generation_time_s": 2.68,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "According to [S1], **134,722 female students** are enrolled at the University of Phoenix-Arizona."
+      "top_score": 0.7032,
+      "retrieval_ms": 140.7,
+      "rag_end_to_end_ms": 503.7,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.7032205370637532
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4436646731725158
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.44250233569989283
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4168430859143316
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.385958370471723
+        }
+      ],
+      "generated_answer": "Approved refunds are disbursed via bank transfer to the student’s registered bank account within **15 to 20 business days**. [S1]"
     },
     {
       "id": "Q06",
       "language": "en",
       "answerable": true,
-      "question": "What is the total student enrollment reported for Ivy Tech Community College-Central Indiana?",
-      "retrieval_hit": true,
+      "question": "What is the replacement fee and turnaround time for a lost student ID card at FEPS?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.239,
-      "generation_time_s": 2.868,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "The total student enrollment reported for Ivy Tech Community College-Central Indiana is **91,179**. [S1]"
+      "top_score": 0.6196,
+      "retrieval_ms": 138.8,
+      "rag_end_to_end_ms": 997.7,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6196411012222116
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5106178951853652
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4752121790414061
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.37427310330821895
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.35757726199959206
+        }
+      ],
+      "generated_answer": "The replacement fee for a lost FEPS student ID card is 150 EGP, and the new card is ready for pickup within 48 business hours after submission of the required documents. [S1] [S2]"
     },
     {
       "id": "Q07",
       "language": "en",
       "answerable": true,
-      "question": "What is the official Arabic designation and room number for the Office of Student Records and Document Verification?",
-      "retrieval_hit": true,
+      "question": "What is the minimum lecture attendance percentage required to avoid being barred from final exams?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.229,
-      "generation_time_s": 2.573,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "According to [S2], the Office of Student Records and Document Verification is officially designated **إدارة شؤون الطلاب والسجلات** and is located in **Room 104** (Ground Floor, Main Administration Building)."
+      "top_score": 0.5824,
+      "retrieval_ms": 166.6,
+      "rag_end_to_end_ms": 737.5,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5824280210036837
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 32,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5745616032415503
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.45914894622524605
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 33,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.34467707447329854
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2663901527811996
+        }
+      ],
+      "generated_answer": "The minimum lecture attendance required to avoid being barred from the final exam is **75 % of the scheduled contact hours**. If a student’s absence rate exceeds 25 % (i.e., attendance falls below 75 %), the faculty council may deprive the student of the right to sit for the final exam. [S1] [S2]"
     },
     {
       "id": "Q08",
       "language": "en",
       "answerable": true,
-      "question": "Actually, what is the cost of the enrollment verification certificate rather than the transcript?",
-      "retrieval_hit": true,
+      "question": "Within how many calendar days must a final semester grade appeal be submitted, and what is the fee per course?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.223,
-      "generation_time_s": 2.109,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "The Enrollment Verification Certificate costs **50 EGP per copy** and is issued within **2 business days**. [S1]"
+      "top_score": 0.6503,
+      "retrieval_ms": 139.0,
+      "rag_end_to_end_ms": 784.2,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6502851177773533
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.44295781146892366
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4199064844322872
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.32468987170951025
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3221324104165634
+        }
+      ],
+      "generated_answer": "A final semester grade appeal must be filed within **10 calendar days** after the official publication of semester results on the online student portal [S1]. The appeal requires an **administrative fee of 100 EGP per course** to be deposited at the University Treasury [S2]."
     },
     {
       "id": "Q09",
       "language": "en",
-      "answerable": false,
-      "question": "What is the tuition fee for the clinical veterinary medicine residency program?",
-      "retrieval_hit": true,
-      "hit_rank": 0,
-      "retrieval_time_s": 2.118,
-      "generation_time_s": 2.146,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": false,
-      "generated_answer": "The provided context does not state the tuition fee for the clinical veterinary medicine residency program. [S1] only discusses tuition-fee exemptions, while [S2] and [S3] concern non-refundable fees and refund timelines."
+      "answerable": true,
+      "question": "What are the undergraduate borrowing privileges and loan duration at the FEPS faculty library?",
+      "hit_rank": 1,
+      "top_score": 0.666,
+      "retrieval_ms": 138.3,
+      "rag_end_to_end_ms": 845.7,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6659522821728726
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3554887627622979
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.353666262317616
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3479639761727793
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3054108577795285
+        }
+      ],
+      "generated_answer": "Undergraduates may borrow up to three books for a loan period of 14 calendar days. They may renew the loan once for an additional seven days, provided no hold has been placed by another borrower. [S1]"
     },
     {
       "id": "Q10",
       "language": "en",
-      "answerable": false,
-      "question": "What minimum score on the Japanese JLPT N1 proficiency exam is required for undergraduate graduation?",
-      "retrieval_hit": true,
-      "hit_rank": 0,
-      "retrieval_time_s": 0.312,
-      "generation_time_s": 3.236,
-      "has_citations": false,
-      "is_refusal": true,
-      "grounded": true,
-      "generated_answer": "The provided evidence does not specify any minimum JLPT N1 score for undergraduate graduation. It only lists degree requirements such as 142 credit hours, a cumulative GPA of at least 2.0, and completion of specified courses [S1–S3]."
+      "answerable": true,
+      "question": "What is the annual rental fee and key security deposit for campus lockers in Building A?",
+      "hit_rank": 1,
+      "top_score": 0.7741,
+      "retrieval_ms": 142.3,
+      "rag_end_to_end_ms": 1007.9,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.7741083976789137
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3115967762782199
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.25471597683870617
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.24606652558968867
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.23203925700079697
+        }
+      ],
+      "generated_answer": "The annual rental fee for a campus locker in Building A is **200 EGP per academic year**. The key security deposit is **100 EGP, fully refundable upon return of the locker key at the end of the academic year**. [S1]"
     },
     {
       "id": "Q11",
-      "language": "ar",
+      "language": "en",
       "answerable": true,
-      "question": "ما هي رسوم استخراج بدل فاقد لبطاقة الطالب وأين يتم تقديم الطلب واستلامها؟",
-      "retrieval_hit": true,
+      "question": "According to the FEPS Credit Hours Handbook, what traditional grade corresponds to a CGPA between 3.6 and 4.0?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.224,
-      "generation_time_s": 5.275,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "وفق [S1]، رسوم استخراج بدل فاقد لبطاقة الطالب **150 جنيهًا مصريًا**، تُدفع في **خزانة الجامعة**.\n\nويتم تقديم طلب丢了 الإبلاغ عن الفقدان إلى **مكتب الأمن في الحرس الجامعي عند البوابة الرئيسية للمبنى A**، ثم تُقدَّم إيصال الدفع ونسخة من بطاقة الرقم القومي/جواز السفر وصورتين شخصيتين حديثتين بخلفية بيضاء إلى **مكتب شؤون الطلاب في الغرفة 101** [S2]. وتصبح البطاقة جاهزة للاستلام خلال **48 ساعة عمل** [S2]."
+      "top_score": 0.4625,
+      "retrieval_ms": 141.9,
+      "rag_end_to_end_ms": 9163.7,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4625407442898444
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.42793816099966664
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 33,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.35093295793551293
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3405407432121985
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.32798853950869344
+        }
+      ],
+      "generated_answer": "The CGPA range of 3.6 to 4.0 corresponds to the traditional grade **“Excellent.”** [S4]"
     },
     {
       "id": "Q12",
-      "language": "ar",
+      "language": "en",
       "answerable": true,
-      "question": "كم تبلغ رسوم استخراج شهادة القيد الرسمية للطلاب وكم تستغرق من الوقت؟",
-      "retrieval_hit": true,
+      "question": "What are the graduation rounds available for Credit Hours System students at FEPS?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.274,
-      "generation_time_s": 2.798,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "وفقًا لـ[S1]، رسوم **شهادة القيد الرسمية** هي **50 جنيهًا مصريًا لكل نسخة**، وتُصدر خلال **يومَي عمل**."
+      "top_score": 0.4729,
+      "retrieval_ms": 138.8,
+      "rag_end_to_end_ms": 9862.1,
+      "refused": false,
+      "fact_recall": 0.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.47290954117423234
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.40171395366763085
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.40058526364802427
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3162530631589948
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3160688095352169
+        }
+      ],
+      "generated_answer": "The FEPS Credit Hours System offers three graduation rounds: January, May, and August. [S3]"
     },
     {
       "id": "Q13",
-      "language": "ar",
+      "language": "en",
       "answerable": true,
-      "question": "ما هي النسبة المئوية والنقاط المقابلة لتقدير ممتاز مرتفع A+ وفقاً لجدول التقديرات الأكاديمية؟",
-      "retrieval_hit": true,
+      "question": "What CGPA qualifies an enrolled student for a 25% tuition fee exemption starting the following semester?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.235,
-      "generation_time_s": 5.044,
-      "has_citations": true,
-      "is_refusal": true,
-      "grounded": false,
-      "generated_answer": "وفقًا لـ[S1]، ي对应 تقدير **«ممتاز»** إلى معدل تراكمي يتراوح بين **3.6 و4.0**. لكن النسبة المئوية الخاصة بـ **A+** غير مذكورة في الأدلة المتاحة؛ كما أن [S3] توضّح فقط أن الدرجة النهائية من 100 نقطة وتوزَّع بين الامتحان النهائي والاختبار النصفي وأعمال الفصل. لذلك لا يمكن تحديد نسبة A+"
+      "top_score": 0.5397,
+      "retrieval_ms": 137.2,
+      "rag_end_to_end_ms": 9778.2,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5396953310596329
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3515716890043472
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.31703264366244976
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 32,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.31565735289906083
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3098600246634884
+        }
+      ],
+      "generated_answer": "A cumulative point average (CGPA) of **3.7 or higher** qualifies an enrolled student for a 25 % tuition fee exemption starting the following semester. [S1] [S2]"
     },
     {
       "id": "Q14",
-      "language": "ar",
+      "language": "en",
       "answerable": true,
-      "question": "ما هو الحد الأدنى والحد الأقصى للعبء الدراسي بالساعات المعتمدة في الفصل الدراسي العادي؟",
-      "retrieval_hit": true,
+      "question": "By what percentage does the credit hour tuition increase during the summer semester?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.328,
-      "generation_time_s": 4.411,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "وفقًا لـ[S2] (دليل FEPS، الصفحة 29)، الحد الأدنى للعبء الدراسي في الفصل الدراسي العادي هو **12 ساعة معتمدة**، والحد الأقصى هو **19 ساعة معتمدة**.  \n\nويشير [S1] إلى أن العبء القياسي يتراوح عادةً بين **15 و18 ساعة**، مع إمكانية رفعه إلى **21 ساعة** في حالات التحميل الإضافي بشروط محددة."
+      "top_score": 0.5528,
+      "retrieval_ms": 171.3,
+      "rag_end_to_end_ms": 9565.7,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.552802117019276
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 29,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.40433199183970014
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3834883942969207
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 29,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.33832706664701784
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 30,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3288526345421927
+        }
+      ],
+      "generated_answer": "The credit hour tuition increases by **50 %** during the summer semester compared to its value in the main semester. [S1]"
     },
     {
       "id": "Q15",
-      "language": "ar",
+      "language": "en",
       "answerable": true,
-      "question": "ما هي نسبة استرداد المصروفات الدراسية المسموح بها في حال الانسحاب خلال الأسبوع الثاني من الدراسة؟",
-      "retrieval_hit": true,
+      "question": "What fine is imposed on language division students if tuition payment is delayed past the sixteenth week?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.259,
-      "generation_time_s": 3.091,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "وفقًا للمصدر **[S1]**، يتم استرداد **50% من الرسوم الدراسية المدفوعة** عند الانسحاب خلال الأسبوع الثاني من الدراسة."
+      "top_score": 0.5608,
+      "retrieval_ms": 140.4,
+      "rag_end_to_end_ms": 1002.5,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 35,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5607632241449881
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5402123831448385
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 28,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3082810929687625
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 35,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2678792216443473
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2552729275438904
+        }
+      ],
+      "generated_answer": "Language‑division students who delay tuition payment past the sixteenth week are subject to a fine equal to **20 % of the tuition fees**. This penalty is specified for late payments beginning at week 16 for all students, including those in the language divisions【S1】【S2】."
     },
     {
       "id": "Q16",
-      "language": "ar",
+      "language": "en",
       "answerable": true,
-      "question": "أين يقع مكتب شؤون الطلاب والسجلات وما هي ساعات العمل الرسمية؟",
-      "retrieval_hit": true,
+      "question": "What prerequisite course is required to enroll in course E309 Environmental Economics?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.262,
-      "generation_time_s": 6.096,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "وفقًا لمصدر **[S1]**، يقع **مكتب شؤون الطلاب والسجلات والتحقق** في **المبنى الرئيسي للإدارة، بالدور الأرضي، الغرفة 104**.  \n\nساعات العمل الرسمية: **من الأحد إلى الخميس، من 9:00 صباحًا حتى 2:30 ظهرًا**، مع الإغلاق **الجمعة والسبت وأيام العطل الرسمية**."
+      "top_score": 0.6553,
+      "retrieval_ms": 166.7,
+      "rag_end_to_end_ms": 9103.7,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 41,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6553088030878539
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 45,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5876588520188252
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 57,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5849824841051693
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 49,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.547558504036661
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 45,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.505871876863909
+        }
+      ],
+      "generated_answer": "The prerequisite for enrolling in E309 Environmental Economics is course E202. [S1] [S2]"
     },
     {
       "id": "Q17",
-      "language": "ar",
+      "language": "en",
       "answerable": true,
-      "question": "كم يبلغ عدد الطلاب البيض المقيدين في كلية آيفي تك المجتمعية وفقاً لبيانات التنوع الطلابي؟",
-      "retrieval_hit": true,
+      "question": "According to diversity statistics, what is the total enrollment and state for University of Phoenix-Arizona?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.26,
-      "generation_time_s": 4.207,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "يبلغ عدد الطلاب Bianca؟ لا. **61,498 طالبًا** وفق بيانات التنوع الطلابي [S1]."
+      "top_score": 0.6776,
+      "retrieval_ms": 190.2,
+      "rag_end_to_end_ms": 9117.1,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 11,
+          "table_id": null,
+          "score": 0.6775824527500556
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 9,
+          "table_id": null,
+          "score": 0.6619645986624103
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 8,
+          "table_id": null,
+          "score": 0.6609811684411003
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 6,
+          "table_id": null,
+          "score": 0.6529957878610121
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 4,
+          "table_id": null,
+          "score": 0.6523635461989324
+        }
+      ],
+      "generated_answer": "According to the diversity statistics, the University of Phoenix‑Arizona has a total enrollment of **195,059** students and is located in the state of **Arizona**. This information is reported in the data rows for both the Total Minority and Unknown categories. [S1] [S2]"
     },
     {
       "id": "Q18",
-      "language": "ar",
+      "language": "en",
       "answerable": true,
-      "question": "أقصد بالأحرى، كم تبلغ الرسوم الإضافية لخدمة الاستخراج العاجل للسجلات خلال 24 ساعة؟",
-      "retrieval_hit": true,
+      "question": "What is the reported Women enrollment count for Ivy Tech Community College-Central Indiana?",
       "hit_rank": 1,
-      "retrieval_time_s": 0.252,
-      "generation_time_s": 4.471,
-      "has_citations": true,
-      "is_refusal": false,
-      "grounded": true,
-      "generated_answer": "تبلغ الرسوم الإضافية لخدمة الاستخراج العاجل **100 جنيه مصري**، وتُصدر السجلات خلال **24 ساعة عمل** للسجل الأكاديمي وشهادات القيد. [S1][S2]"
+      "top_score": 0.7579,
+      "retrieval_ms": 187.4,
+      "rag_end_to_end_ms": 696.9,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 12,
+          "table_id": null,
+          "score": 0.7579249377419482
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 18,
+          "table_id": null,
+          "score": 0.6272868847871383
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 20,
+          "table_id": null,
+          "score": 0.6129392376040996
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 22,
+          "table_id": null,
+          "score": 0.6068184401504504
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 15,
+          "table_id": null,
+          "score": 0.6041052079343426
+        }
+      ],
+      "generated_answer": "The reported Women enrollment count for Ivy Tech Community College‑Central Indiana is **53,476** students. This figure is listed under the Women category in the retrieved data. [S1]"
     },
     {
       "id": "Q19",
-      "language": "ar",
-      "answerable": false,
-      "question": "ما هي رسوم ورشة تدريب الفروسية وركوب الخيل الأولمبية المقامة بالكلية؟",
-      "retrieval_hit": true,
-      "hit_rank": 0,
-      "retrieval_time_s": 0.237,
-      "generation_time_s": 2.919,
-      "has_citations": true,
-      "is_refusal": true,
-      "grounded": true,
-      "generated_answer": "لم تُذكر في أدلة دليل الطالب المتوفرة أي رسوم تتعلق بورشة تدريب الفروسية وركوب الخيل الأولمبية المقامة بالكلية ([S1]، [S2]، [S3])، لذلك لا يمكن تحديد قيمتها من هذه المعلومات."
+      "language": "en",
+      "answerable": true,
+      "question": "What is the Total Minority enrollment reported for Liberty University in Virginia?",
+      "hit_rank": 1,
+      "top_score": 0.79,
+      "retrieval_ms": 142.4,
+      "rag_end_to_end_ms": 9174.3,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 33,
+          "table_id": null,
+          "score": 0.789986360257171
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 27,
+          "table_id": null,
+          "score": 0.6828692309876496
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 26,
+          "table_id": null,
+          "score": 0.6752045108189401
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 30,
+          "table_id": null,
+          "score": 0.6750168868494112
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 29,
+          "table_id": null,
+          "score": 0.674325760996562
+        }
+      ],
+      "generated_answer": "The Total Minority enrollment reported for Liberty University in Virginia is **19,163** students. This figure is taken from the university’s enrollment data for the state of Virginia. [S1]"
     },
     {
       "id": "Q20",
+      "language": "en",
+      "answerable": true,
+      "question": "In the diversity dataset, what is the state and Women enrollment for Lone Star College system?",
+      "hit_rank": 1,
+      "top_score": 0.6578,
+      "retrieval_ms": 138.4,
+      "rag_end_to_end_ms": 900.1,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 34,
+          "table_id": null,
+          "score": 0.6578457853747008
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 44,
+          "table_id": null,
+          "score": 0.574329334032887
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 40,
+          "table_id": null,
+          "score": 0.568805315101665
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 42,
+          "table_id": null,
+          "score": 0.5548253082206782
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 37,
+          "table_id": null,
+          "score": 0.5485024371599179
+        }
+      ],
+      "generated_answer": "The Lone Star College system is located in Texas, and its Women enrollment is 41,268. This information comes from the diversity dataset entries for the system. [S1] [S2]"
+    },
+    {
+      "id": "Q21",
+      "language": "ar",
+      "answerable": true,
+      "question": "أين يقع مقر إدارة شؤون الطلاب والسجلات في كلية الاقتصاد والعلوم السياسية بجامعة القاهرة؟",
+      "hit_rank": 1,
+      "top_score": 0.4794,
+      "retrieval_ms": 179.0,
+      "rag_end_to_end_ms": 9415.3,
+      "refused": false,
+      "fact_recall": 0.3333333333333333,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4794448633647743
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 9,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.43766252121550986
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.43569467432731734
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 17,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.41776506833323757
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.41569594302308643
+        }
+      ],
+      "generated_answer": "مقر إدارة سجلات الطلاب في كلية الاقتصاد والعلوم السياسية يقع في المبنى أ، الغرفة 104.  \nهذا المكتب يُعرف بـ “Office of Student Records & Verification” ويُعد جزءاً من خدمات الطلاب في الكلية. [S3]"
+    },
+    {
+      "id": "Q22",
+      "language": "ar",
+      "answerable": true,
+      "question": "كم تبلغ الرسوم العادية لاستخراج بيان الدرجات الأكاديمي (السجل الدراسي) بالكلية؟",
+      "hit_rank": 1,
+      "top_score": 0.4635,
+      "retrieval_ms": 140.7,
+      "rag_end_to_end_ms": 9306.2,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.463541033520922
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.39592058930309026
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.296015939745782
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 10,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.27730465730885845
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2717972461982231
+        }
+      ],
+      "generated_answer": "الرسوم العادية لاستخراج بيان الدرجات الأكاديمي (السجل الدراسي) في الكلية هي 100 جنيه مصري لكل نسخة. [S1]"
+    },
+    {
+      "id": "Q23",
+      "language": "ar",
+      "answerable": true,
+      "question": "ما هي نسبة استرداد الرسوم الدراسية في حال الانسحاب خلال الأسبوع الأول من بدء الدراسة؟",
+      "hit_rank": 1,
+      "top_score": 0.6382,
+      "retrieval_ms": 138.6,
+      "rag_end_to_end_ms": 9330.6,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6382448044943129
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4689388219463766
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.46398834570780845
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 30,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.44572942810897476
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.38271574775599737
+        }
+      ],
+      "generated_answer": "نسبة استرداد الرسوم الدراسية في حال الانسحاب خلال الأسبوع الأول من بدء الدراسة هي 75% من الرسوم المدفوعة. [S1]"
+    },
+    {
+      "id": "Q24",
+      "language": "ar",
+      "answerable": true,
+      "question": "ما هو مصير طلبات استرداد المصروفات المقدمة بعد نهاية الأسبوع الثاني من بدء الدراسة؟",
+      "hit_rank": 1,
+      "top_score": 0.4808,
+      "retrieval_ms": 136.9,
+      "rag_end_to_end_ms": 636.0,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4807927839933075
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4704600761868588
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3471158835120324
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.34204534733013514
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.34138267753497087
+        }
+      ],
+      "generated_answer": "بعد نهاية الأسبوع الثاني من بدء الدراسة (اليوم 15 وما بعده)، لا تُمنح أي استردادات؛ يُصنف الطلب كـ 0 ٪ استرداد، ولا يُسمح بأي استرداد تحت أي ظرف. هذا يتوافق مع سياسة عدم الاسترداد المعلنة في [S1] و[S2]."
+    },
+    {
+      "id": "Q25",
+      "language": "ar",
+      "answerable": true,
+      "question": "ما هي رسوم استخراج بطاقة الطالب (كارنيه الكلية) بدل الفاقد؟",
+      "hit_rank": 1,
+      "top_score": 0.5865,
+      "retrieval_ms": 164.6,
+      "rag_end_to_end_ms": 9097.3,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5865197952868493
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.46271501332604403
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.36560209361886165
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.31151642971169013
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.29748407388129094
+        }
+      ],
+      "generated_answer": "رسوم استخراج بطاقة الطالب بدل الفاقد هي 150 EGP، ويُدفع هذا المبلغ في خزينة الجامعة. [S1]"
+    },
+    {
+      "id": "Q26",
+      "language": "ar",
+      "answerable": true,
+      "question": "أين يتلقى طلاب كلية الاقتصاد والعلوم السياسية الرعاية الطبية والعلاج المجاني؟",
+      "hit_rank": 1,
+      "top_score": 0.4294,
+      "retrieval_ms": 140.8,
+      "rag_end_to_end_ms": 1593.7,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.42936616904635017
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 23,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4223989540892541
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3876064622992288
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 9,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3432942418080891
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 7,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.33643026491787165
+        }
+      ],
+      "generated_answer": "يتلقى طلاب كلية الاقتصاد والعلوم السياسية الرعاية الطبية والعلاج المجاني في مستشفى الطلبة بجامعة القاهرة في الجيزة. يمكنهم الوصول إلى الخدمات الطبية بتقديم بطاقة الطالب الفعّالة للفصل الدراسي الحالي. [S1]"
+    },
+    {
+      "id": "Q27",
+      "language": "ar",
+      "answerable": true,
+      "question": "خلال كم ساعة يجب اعتماد الشهادات والإجازات المرضية من مستشفى الطلبة عند الغياب عن الامتحانات؟",
+      "hit_rank": 1,
+      "top_score": 0.6141,
+      "retrieval_ms": 142.3,
+      "rag_end_to_end_ms": 9589.0,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.6140905160919976
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 32,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4181893245765266
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 32,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.362425469890034
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 32,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3405620866073916
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2999839367596282
+        }
+      ],
+      "generated_answer": "يجب أن تُعتمد شهادات الإجازات المرضية من مستشفى الطلبة خلال **48 ساعة** من بداية المرض. [S1]"
+    },
+    {
+      "id": "Q28",
+      "language": "ar",
+      "answerable": true,
+      "question": "كم تبلغ غرامة التأخير عن إعادة الكتب المستعارة من مكتبة الكلية؟",
+      "hit_rank": 1,
+      "top_score": 0.5376,
+      "retrieval_ms": 138.5,
+      "rag_end_to_end_ms": 620.7,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5376100564115683
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 35,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3461886828955949
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.31779522864384335
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2224969466447284
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.21773795729456125
+        }
+      ],
+      "generated_answer": "غرامة التأخير عن إعادة الكتب المستعارة هي 5 EGP لكل كتاب في كل يوم عمل متأخر. [S1]"
+    },
+    {
+      "id": "Q29",
+      "language": "ar",
+      "answerable": true,
+      "question": "ما هي مهلة تقديم الالتماس وإعادة رصد الدرجات بعد إعلان النتائج الرسمية للامتحانات؟",
+      "hit_rank": 1,
+      "top_score": 0.4237,
+      "retrieval_ms": 165.2,
+      "rag_end_to_end_ms": 8957.1,
+      "refused": false,
+      "fact_recall": 0.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.42370161530454553
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.31985671313427444
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2758051093532671
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 31,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2644436911773239
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 32,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2599648337138102
+        }
+      ],
+      "generated_answer": "مهلة تقديم الالتماس وإعادة رصد الدرجات هي عشرة أيام تقويمية بعد نشر النتائج الرسمية للامتحانات على بوابة الطالب الإلكترونية. [S1]"
+    },
+    {
+      "id": "Q30",
+      "language": "ar",
+      "answerable": true,
+      "question": "هل تسترد رسوم الالتماس (100 جنيه) إذا تبين وجود خطأ في رصد درجات الطالب؟",
+      "hit_rank": 1,
+      "top_score": 0.5575,
+      "retrieval_ms": 138.7,
+      "rag_end_to_end_ms": 9223.2,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.557505372483322
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4033133157331301
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.35897298961814583
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3072455613698354
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2804929879653485
+        }
+      ],
+      "generated_answer": "نعم، إذا تبين وجود خطأ في رصد درجات الطالب وتؤدي الاستئناف إلى تعديل الدرجة إلى الأعلى، تُسترد رسوم الالتماس البالغة 100 جنيه بالكامل. [S1] [S2]"
+    },
+    {
+      "id": "Q31",
+      "language": "ar",
+      "answerable": true,
+      "question": "ما هو التقدير التقليدي المقابل للمعدل التراكمي (CGPA) من 3.2 إلى أقل من 3.6 في نظام الساعات المعتمدة بكلية الاقتصاد؟",
+      "hit_rank": 1,
+      "top_score": 0.4278,
+      "retrieval_ms": 171.4,
+      "rag_end_to_end_ms": 1007.3,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 4,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.4278001641784053
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 44,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.41868456276266464
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.38206977019753197
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 41,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.34596958313856874
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 39,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.34583092835975937
+        }
+      ],
+      "generated_answer": "التقدير التقليدي المقابل للمعدل التراكمي (CGPA) من 3.2 إلى أقل من 3.6 هو **«Very good»**.  \nهذا التقدير مذكور في دليل الطالب في قسم البكالوريوس. [S3]"
+    },
+    {
+      "id": "Q32",
+      "language": "ar",
+      "answerable": true,
+      "question": "ما هو التقدير المقابل للمعدل التراكمي من 2.6 إلى أقل من 3.2 في دليل طالب كلية الاقتصاد والعلوم السياسية؟",
+      "hit_rank": 1,
+      "top_score": 0.3803,
+      "retrieval_ms": 145.3,
+      "rag_end_to_end_ms": 9526.5,
+      "refused": false,
+      "fact_recall": 0.5,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.38029932238290387
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 44,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.354578631358783
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.34694150455740513
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 30,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3454135218605021
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 9,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.33921083507613004
+        }
+      ],
+      "generated_answer": "التقدير المقابل للمعدل التراكمي من 2.6 إلى أقل من 3.2 هو **Good** [S1]."
+    },
+    {
+      "id": "Q33",
+      "language": "ar",
+      "answerable": true,
+      "question": "ما هي أدوار التخرج المتاحة لطلاب نظام الساعات المعتمدة في الكلية؟",
+      "hit_rank": 1,
+      "top_score": 0.3727,
+      "retrieval_ms": 140.6,
+      "rag_end_to_end_ms": 9061.9,
+      "refused": false,
+      "fact_recall": 0.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 29,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.37265701657249606
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 7,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.36453193162195374
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3481090336565744
+        },
+        {
+          "source_id": "S4",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 29,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.34344393680793095
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 29,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.3341895931831287
+        }
+      ],
+      "generated_answer": "أدوار التخرج المتاحة لطلاب نظام الساعات المعتمدة في الكلية هي ثلاث جولات: جولة يناير، جولة مايو، وجولة أغسطس. هذه الجولات تُحدد مواعيد التخرج وفقاً للبرنامج الدراسي. [S3]"
+    },
+    {
+      "id": "Q34",
+      "language": "ar",
+      "answerable": true,
+      "question": "ما هي نسبة الإعفاء من المصروفات التي يحصل عليها الطالب الحاصل على معدل 3.7 أو أكثر؟",
+      "hit_rank": 1,
+      "top_score": 0.4384,
+      "retrieval_ms": 144.7,
+      "rag_end_to_end_ms": 9852.5,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.43838581786507025
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.34227274553605846
+        },
+        {
+          "source_id": "S3",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2642851723135762
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.24096673013492953
+        },
+        {
+          "source_id": "S5",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2384979477568916
+        }
+      ],
+      "generated_answer": "الطالب الذي يحقق معدلًا إجماليًا 3.7 أو أكثر يحصل على إعفاء بنسبة 25 ٪ من رسوم الدراسة.  \nهذا يُذكر في دليل الطالب حيث يُذكر أن الطلاب الذين يحققون معدلًا 3.7 أو أعلى يُعفى منهم 25 ٪ من الرسوم [S1] [S2]."
+    },
+    {
+      "id": "Q35",
+      "language": "ar",
+      "answerable": true,
+      "question": "كم تبلغ غرامة التأخير في سداد المصروفات لشعب اللغات إذا تأخر الطالب بعد الأسبوع السادس عشر؟",
+      "hit_rank": 1,
+      "top_score": 0.5215,
+      "retrieval_ms": 169.7,
+      "rag_end_to_end_ms": 9380.1,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 35,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.5215128283599493
+        },
+        {
+          "source_id": "S2",
+          "source_document": "FEPS_student_handbook.pdf",
+          "file_format": "pdf",
+          "page_number": 34,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.45929730588203754
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.32554805119440955
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.30726683514465114
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": null,
+          "page_number": null,
+          "row_index": null,
+          "table_id": null,
+          "score": 0.2666098885953907
+        }
+      ],
+      "generated_answer": "غرامة التأخير في سداد المصروفات لشعب اللغات بعد الأسبوع السادس عشر تبلغ **20 ٪ من الرسوم الدراسية**.  \nهذا ينص عليه القواعد العامة في دليل الطالب، حيث يُفرض غرامة 10 ٪ للمتأخرين قبل الأسبوع السادس عشر، وتزداد إلى 20 ٪ ابتداءً من الأسبوع السادس عشر. [S1]"
+    },
+    {
+      "id": "Q36",
+      "language": "ar",
+      "answerable": true,
+      "question": "وفقاً لبيانات التسجيل الجامعي، كم يبلغ إجمالي عدد الطلاب المسجلين في جامعة فينكس بأريزونا؟",
+      "hit_rank": 1,
+      "top_score": 0.5609,
+      "retrieval_ms": 170.6,
+      "rag_end_to_end_ms": 9105.8,
+      "refused": false,
+      "fact_recall": 1.0,
+      "has_citation": true,
+      "citations": [
+        {
+          "source_id": "S1",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 9,
+          "table_id": null,
+          "score": 0.5609392033927026
+        },
+        {
+          "source_id": "S2",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 11,
+          "table_id": null,
+          "score": 0.5534344031179117
+        },
+        {
+          "source_id": "S3",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 8,
+          "table_id": null,
+          "score": 0.5441558199970419
+        },
+        {
+          "source_id": "S4",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 2,
+          "table_id": null,
+          "score": 0.5427255883918709
+        },
+        {
+          "source_id": "S5",
+          "source_document": "unknown",
+          "file_format": "csv",
+          "page_number": null,
+          "row_index": 6,
+          "table_id": null,
+          "score": 0.5423958142880644
+        }
+      ],
+      "generated_answer": "إجمالي عدد الطلاب المسجلين في جامعة فينكس بأريزونا هو 195 059 طالبًا. هذا الرقم موضح في سجلات التسجيل الجامعي المتاحة في المستندات [S1] و[S2]."
+    },
+    {
+      "id": "Q37",
+      "language": "en",
+      "answerable": false,
+      "question": "How do I replace the hydraulic brake pads on a supersonic jet aircraft?",
+      "hit_rank": 0,
+      "top_score": 0.159,
+      "retrieval_ms": 140.4,
+      "rag_end_to_end_ms": 139.3,
+      "refused": true,
+      "fact_recall": null,
+      "has_citation": false,
+      "citations": [],
+      "generated_answer": "I do not have sufficient information in the provided documents to answer this question."
+    },
+    {
+      "id": "Q38",
+      "language": "en",
+      "answerable": false,
+      "question": "What are the chemical fertilizers used for growing cocoa beans in the Amazon rainforest?",
+      "hit_rank": 0,
+      "top_score": 0.0695,
+      "retrieval_ms": 167.5,
+      "rag_end_to_end_ms": 138.5,
+      "refused": true,
+      "fact_recall": null,
+      "has_citation": false,
+      "citations": [],
+      "generated_answer": "I do not have sufficient information in the provided documents to answer this question."
+    },
+    {
+      "id": "Q39",
       "language": "ar",
       "answerable": false,
-      "question": "ما هي شروط الالتحاق ببرنامج هندسة الميكاترونكس وهندسة الطيران؟",
-      "retrieval_hit": true,
+      "question": "كيف يمكن صيانة محركات الديزل الثقيلة في السفن التجارية؟",
       "hit_rank": 0,
-      "retrieval_time_s": 0.23,
-      "generation_time_s": 3.63,
-      "has_citations": true,
-      "is_refusal": true,
-      "grounded": true,
-      "generated_answer": "لا تتضمن الأدلة المتاحة شروط الالتحاق ببرنامجي **هندسة الميكاترونكس وهندسة الطيران**؛ فهي تذكر متطلبات برنامج البكالوريوس في الاقتصاد ومتطلبات المسار الفرعي فيه ([S1]، [S2]، [S3]). لذلك لا يمكنني الجزم بالشروط دون الصفحات المتعلقة ببرامج الهندسة."
+      "top_score": 0.0635,
+      "retrieval_ms": 141.3,
+      "rag_end_to_end_ms": 139.2,
+      "refused": true,
+      "fact_recall": null,
+      "has_citation": false,
+      "citations": [],
+      "generated_answer": "لا تتوفر لدي معلومات كافية في المستندات المقدمة للإجابة على هذا السؤال."
+    },
+    {
+      "id": "Q40",
+      "language": "ar",
+      "answerable": false,
+      "question": "ما هي درجات الحرارة القياسية المسجلة في القطب الشمالي خلال فصل الشتاء؟",
+      "hit_rank": 0,
+      "top_score": 0.1074,
+      "retrieval_ms": 143.7,
+      "rag_end_to_end_ms": 141.7,
+      "refused": true,
+      "fact_recall": null,
+      "has_citation": false,
+      "citations": [],
+      "generated_answer": "لا تتوفر لدي معلومات كافية في المستندات المقدمة للإجابة على هذا السؤال."
     }
   ]
 }

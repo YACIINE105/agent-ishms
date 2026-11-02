@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     OPENAI_BASE_URL : str = None
     OPENAI_API_KEY : str = None
 
+    GROQ_API_KEY : str | None = None
+    GROQ_BASE_URL : str = "https://api.groq.com/openai/v1"
+
     EMBEDDING_BASE_URL: str | None = None
     EMBEDDING_API_KEY: str | None = None
 

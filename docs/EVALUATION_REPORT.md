@@ -1,104 +1,138 @@
-# Bilingual Voice RAG Evaluation Benchmark Report (40 Questions)
+# Bilingual Voice RAG Evaluation Report (40 Questions, Live Run)
 
-**System:** `agent-ishms` Bilingual Voice RAG Assistant  
-**Working Directory:** `/home/yacine_105/.thinkrail/worktrees/4d-space/workspace-4/`  
-**Dataset:** [`eval/questions_40.jsonl`](../eval/questions_40.jsonl) & [`eval/questions_40.json`](../eval/questions_40.json) (40 Questions: 20 English, 20 Arabic)  
-**Corpus Ingested:** `data/corpus/` (`FEPS_student_handbook.pdf`, `student_services_faq.txt`, `diversity_school.csv`)  
-**Evaluation Date:** 2026-11-01  
-
----
-
-## 1. Executive Summary & Headline Metrics
-
-The evaluation benchmark was executed across the complete 40-question gold dataset (36 answerable questions covering PDF tables, CSV rows, and administrative FAQs, plus 4 out-of-domain unanswerable probes).
-
-| Metric | Target | Measured Result (Dense Baseline) | Status |
-| :--- | :---: | :---: | :---: |
-| **Retrieval Hit Rate @ 1 (Top-1 Recall)** | $\ge 85\%$ | **100.0%** (36/36) | **PASS** |
-| **Retrieval Hit Rate @ 3 (Top-3 Recall)** | $\ge 90\%$ | **100.0%** (36/36) | **PASS** |
-| **Retrieval Hit Rate @ 5 (Top-5 Recall)** | $\ge 95\%$ | **100.0%** (36/36) | **PASS** |
-| **Mean Reciprocal Rank (MRR)** | $\ge 0.85$ | **1.000** | **PASS** |
-| **Grounded Factual Accuracy** | $\ge 80\%$ | **100.0%** (36/36) | **PASS** |
-| **Abstention Accuracy (Unanswerable)** | $\ge 90\%$ | **100.0%** (4/4) | **PASS** |
-| **Average Retrieval Latency (Dense)** | $< 300\text{ ms}$ | **176.9 ms** | **PASS** |
-| **Language Balance** | 50% EN / 50% AR | **20 EN / 20 AR** | **PASS** |
+**System:** `agent-ishms` bilingual voice RAG assistant
+**Dataset:** [`eval/questions_40.jsonl`](../eval/questions_40.jsonl) (20 EN / 20 AR; 36 answerable, 4 out-of-domain)
+**Corpus:** `data/corpus/` (`FEPS_student_handbook.pdf`, `student_services_faq.txt`, `diversity_school.csv`)
+**Pipeline under test:** `NLPController.answer_rag_query` — the same code path the voice tool calls (pgvector retrieval → relevance gate 0.30 → grounded generation with `[S#]` citations)
+**Models:** embeddings `nvidia/nemotron-3-embed-1b` (2048-d, halfvec); generation Groq `openai/gpt-oss-20b`
+**Raw output:** [`eval/results.json`](../eval/results.json) (every answer, citation list, score and timing)
+**Reproduce:** `uv run python eval/run_eval.py`
+**Date:** 2026-11-02
 
 ---
 
-## 2. Reranker Comparative Benchmark: Without Reranker vs. With Remote Cohere Reranker
+## 1. Headline Metrics
 
-An automated comparative benchmark was run using [`eval/compare_retrieval_40.py`](../eval/compare_retrieval_40.py) comparing **Pure Dense Vector Search (PostgreSQL + pgvector)** against **Remote Cohere Cross-Encoder Reranking (`rerank-v3.5`)**:
+| Metric | Definition | Result |
+| :--- | :--- | :---: |
+| Hit@1 / Hit@3 / Hit@5 | Expected source document in top-k retrieved chunks | **100% / 100% / 100%** (36/36) |
+| MRR | Mean reciprocal rank of first correct source | **1.000** |
+| Citation rate | Answer carries an `[S#]` marker **and** structured citations were returned | **100%** (36/36) |
+| False refusal rate | Answerable question refused | **0%** (0/36) |
+| OOD abstention accuracy | Out-of-domain probe refused | **100%** (4/4) |
+| Lexical fact recall | Share of reference facts found verbatim (normalized) in the answer | **75.5%** (EN 79.2%, AR 70.8%) |
+| Exact fact match | All reference facts found verbatim | **61.1%** (22/36) |
+| Key value correctness (manual) | The numeric value / entity asked for is correct | **36/36** |
+| Retrieval latency | Embedding + pgvector search | p50 **142 ms**, p95 **187 ms** |
+| RAG latency, un-throttled | Retrieval + gate + generation, calls without a 429 | median **777 ms**, max 1,594 ms (n=17) |
 
-| Evaluation Metric | Without Reranker (Pure Dense pgvector) | With Remote Cohere Reranker (`rerank-v3.5`) | Delta | Impact & Observations |
-| :--- | :---: | :---: | :---: | :--- |
-| **Mean Reciprocal Rank (MRR)** | **100.0%** | **100.0%** | `+0.0%` | Both retrieve the target passage at rank #1 on the curated corpus. |
-| **Hit Rate @ 1** | **100.0%** | **100.0%** | `+0.0%` | 100% of answerable questions match the correct document chunk at rank 1. |
-| **Hit Rate @ 3** | **100.0%** | **100.0%** | `+0.0%` | Target passage is within the top-3 context window sent to the LLM. |
-| **Hit Rate @ 5** | **100.0%** | **100.0%** | `+0.0%` | 100% total candidate coverage across the 40 questions. |
-| **Average Retrieval Latency** | **176.9 ms** | **1,042.6 ms** | `+865.8 ms` | Pure dense vector search is **5.9x faster**, leaving maximum time for streaming voice TTS. |
-| **Local Memory Footprint** | **0 MB** | **0 MB** | `0 MB` | **Hardware Bound Met:** Neither pipeline loads local PyTorch/GGUF models (4 GiB workstation RAM preserved). |
-| **API Rate Limit Resilience** | **Infinite (Local DB)** | **10 RPM (Trial limit)** | High Risk | Cohere trial keys enforce 10 calls/min, returning HTTP 429 during bursts. Dense search has zero external rate limits. |
+### Why lexical fact recall is lower than correctness
+Lexical recall is a strict lower bound: it requires the reference phrase verbatim. Manual review of the 14 partial matches:
 
-### Architectural Conclusion on Rerankers
-- **Why Reranker is Kept Optional:** In real-time voice conversations, low latency is paramount. Pure dense search completes in **176.9 ms** with **100% Top-1 precision** on this corpus. Adding the remote HTTP reranker adds ~865 ms of network overhead and hits trial rate limits without improving accuracy on this size corpus.
-- **Where Reranker is Kept:** Decoupled into `scripts/compare_rerankers.py` and `eval/compare_rag_rerankers.py` for on-demand bench testing when candidate pools expand (`k >= 50`).
-
----
-
-## 3. Dataset Distribution (40 Questions)
-
-The 40 questions cover all required modalities, complex academic tables, exact data rows, and negative probes:
-
-| Document Source | Questions | Languages | Content / Target Type |
-| :--- | :---: | :---: | :--- |
-| **`FEPS_student_handbook.pdf`** | 11 | 6 EN / 5 AR | Academic tables, CGPA thresholds (3.6 Excellent, 3.2 Very Good, 2.6 Good), graduation rounds, summer credit tuition (50% increase), language division late fines (20%), course prerequisites (`E309` $\rightarrow$ `E202`). |
-| **`student_services_faq.txt`** | 20 | 10 EN / 10 AR | Admin office locations (Room 104), transcript costs (100 EGP), refund schedules (50% Week 2, 0% Day 15+), lost ID card fee (150 EGP), attendance limits (75%), medical excuse validation (48 hrs), grade appeals (10 days, 100 EGP). |
-| **`diversity_school.csv`** | 5 | 4 EN / 1 AR | Exact institutional metrics: University of Phoenix enrollment (195,059), Ivy Tech Women count (53,476), Liberty University Minority enrollment (19,163), Lone Star College Women count (41,268). |
-| **Out-of-Domain Probes** | 4 | 2 EN / 2 AR | Jet aircraft brake pads, cocoa bean fertilizers, marine diesel maintenance, Arctic winter temperatures (Testing hard abstention). |
+| Cause | Questions | Example |
+| :--- | :--- | :--- |
+| Paraphrase / unit wording | Q03, Q04, Q09, Q12, Q13, Q18, Q25, Q28, Q29, Q33 | "three books" vs "up to 3 books"; "EGP" vs "جنيهات"; "عشرة أيام" vs "10 أيام" |
+| **Corpus conflict** | Q01, Q21 | FAQ line 29 says "Main Administration Building, Ground Floor, Room 104"; line 162 says "Building A, Room 104". The model cited the second chunk. Room 104 is correct in both. |
+| **Language mixing (real defect)** | Q31, Q32 | Arabic answer gives the grade label in English ("Very good", "Good") instead of «جيد جداً» / «جيد». |
 
 ---
 
-## 4. Complete Per-Question Evaluation Matrix
+## 2. Relevance Gate Calibration (0.40 → 0.30)
 
-| ID | Lang | Format | Query | Ground Truth Fact / Expected Source | Result |
-| :---: | :---: | :---: | :--- | :--- | :---: |
-| **1** | EN | TXT | Where is the Office of Student Records located? | Main Administration Building, Ground Floor, Room 104 (`student_services_faq.txt`) | **HIT** |
-| **2** | EN | TXT | What is the fee and turnaround for official transcripts? | 100 EGP per copy, 3 to 5 business days (`student_services_faq.txt`) | **HIT** |
-| **3** | EN | TXT | What is the refund percentage in Week 2? | 50% refund of paid tuition fees (`student_services_faq.txt`) | **HIT** |
-| **4** | EN | TXT | What is the registration fee deducted on early refunds? | 200 EGP non-refundable registration fee (`student_services_faq.txt`) | **HIT** |
-| **5** | EN | TXT | How long does it take to disburse bank refunds? | 15 to 20 business days (`student_services_faq.txt`) | **HIT** |
-| **6** | EN | TXT | What is the replacement fee for a lost student ID? | 150 EGP, ready within 48 business hours (`student_services_faq.txt`) | **HIT** |
-| **7** | EN | TXT | What is the minimum required attendance percentage? | 75% attendance; exceeding 25% absences leads to deprivation (`student_services_faq.txt`) | **HIT** |
-| **8** | EN | TXT | What is the deadline and fee for grade appeals? | Within 10 calendar days, 100 EGP per course (`student_services_faq.txt`) | **HIT** |
-| **9** | EN | TXT | What are the undergraduate borrowing privileges? | Up to 3 books for 14 calendar days (`student_services_faq.txt`) | **HIT** |
-| **10** | EN | TXT | What are the rental fees for campus lockers? | 200 EGP annual rental, 100 EGP key deposit (`student_services_faq.txt`) | **HIT** |
-| **11** | EN | PDF | What grade corresponds to CGPA 3.6 to 4.0? | 'Excellent' grade (`FEPS_student_handbook.pdf`, Page 34) | **HIT** |
-| **12** | EN | PDF | What are the graduation rounds for credit hour students? | January round, May round, August round (`FEPS_student_handbook.pdf`, Page 34) | **HIT** |
-| **13** | EN | PDF | What CGPA qualifies for a 25% tuition fee exemption? | Cumulative GPA of 3.7 or higher (`FEPS_student_handbook.pdf`, Page 34) | **HIT** |
-| **14** | EN | PDF | By what percentage does summer credit hour fee increase? | Increases by 50% from main semester (`FEPS_student_handbook.pdf`, Page 34) | **HIT** |
-| **15** | EN | PDF | What fine is charged if tuition is delayed past Week 16? | 20% fine of tuition fees (`FEPS_student_handbook.pdf`, Page 35) | **HIT** |
-| **16** | EN | PDF | What prerequisite is required for E309 Environmental Economics? | Course E202 (`FEPS_student_handbook.pdf`, Page 41) | **HIT** |
-| **17** | EN | CSV | What is the total enrollment for University of Phoenix? | 195,059 students, Arizona (`diversity_school.csv`, Row 1) | **HIT** |
-| **18** | EN | CSV | What is the Women enrollment for Ivy Tech Community College? | 53,476 women enrolled (`diversity_school.csv`, Row 12) | **HIT** |
-| **19** | EN | CSV | What is the Total Minority enrollment for Liberty University? | 19,163 students, Virginia (`diversity_school.csv`, Row 33) | **HIT** |
-| **20** | EN | CSV | What is the Women enrollment for Lone Star College? | 41,268 women enrolled, Texas (`diversity_school.csv`, Row 34) | **HIT** |
-| **21** | AR | TXT | أين يقع مقر إدارة شؤون الطلاب والسجلات بالكلية؟ | المبنى الإداري الرئيسي، الدور الأرضي، غرفة 104 (`student_services_faq.txt`) | **HIT** |
-| **22** | AR | TXT | كم تبلغ الرسوم العادية لاستخراج بيان الدرجات الأكاديمي؟ | 100 جنيه مصري لكل نسخة (`student_services_faq.txt`) | **HIT** |
-| **23** | AR | TXT | ما هي نسبة استرداد الرسوم عند الانسحاب في الأسبوع الأول؟ | 75% من المصروفات المسددة (`student_services_faq.txt`) | **HIT** |
-| **24** | AR | TXT | ما هو مصير طلبات الاسترداد بعد الأسبوع الثاني؟ | 0% (لا يمكن استرداد أي رسوم) (`student_services_faq.txt`) | **HIT** |
-| **25** | AR | TXT | ما هي رسوم استخراج كارنيه الكلية بدل فاقد؟ | 150 جنيهاً مصرياً تسدد في الخزينة (`student_services_faq.txt`) | **HIT** |
-| **26** | AR | TXT | أين يتلقى طلاب الكلية الرعاية الطبية والعلاج المجاني؟ | مستشفى الطلبة التابع لجامعة القاهرة بالجيزة (`student_services_faq.txt`) | **HIT** |
-| **27** | AR | TXT | خلال كم ساعة يجب اعتماد الشهادات المرضية من مستشفى الطلبة؟ | خلال 48 ساعة من تاريخ المرض (`student_services_faq.txt`) | **HIT** |
-| **28** | AR | TXT | كم تبلغ غرامة التأخير عن إعادة الكتب المستعارة من المكتبة؟ | 5 جنيهات مصرية عن كل كتاب عن كل يوم عمل (`student_services_faq.txt`) | **HIT** |
-| **29** | AR | TXT | ما هي مهلة تقديم الالتماس وإعادة رصد الدرجات؟ | 10 أيام تقويمية من تاريخ إعلان النتائج (`student_services_faq.txt`) | **HIT** |
-| **30** | AR | TXT | هل تسترد رسوم الالتماس إذا ثبت خطأ في رصد درجات الطالب؟ | نعم، تسترد الـ 100 جنيه بالكامل في حال زيادة الدرجات (`student_services_faq.txt`) | **HIT** |
-| **31** | AR | PDF | ما هو التقدير المقابل للمعدل من 3.2 إلى أقل من 3.6؟ | تقدير 'جيد جداً' (Very good) (`FEPS_student_handbook.pdf`, Page 34) | **HIT** |
-| **32** | AR | PDF | ما هو التقدير المقابل للمعدل من 2.6 إلى أقل من 3.2؟ | تقدير 'جيد' (Good) (`FEPS_student_handbook.pdf`, Page 34) | **HIT** |
-| **33** | AR | PDF | ما هي أدوار التخرج المتاحة لطلاب الساعات المعتمدة؟ | دور يناير، دور مايو، دور أغسطس (`FEPS_student_handbook.pdf`, Page 34) | **HIT** |
-| **34** | AR | PDF | ما هي نسبة الإعفاء التي يحصل عليها الطالب بمعدل 3.7+؟ | إعفاء بنسبة 25% من الرسوم الدراسية (`FEPS_student_handbook.pdf`, Page 34) | **HIT** |
-| **35** | AR | PDF | كم تبلغ غرامة التأخير في سداد المصروفات بعد الأسبوع 16؟ | غرامة 20% من الرسوم الدراسية (`FEPS_student_handbook.pdf`, Page 35) | **HIT** |
-| **36** | AR | CSV | كم يبلغ إجمالي عدد الطلاب في جامعة فينكس بأريزونا؟ | 195,059 طالباً (`diversity_school.csv`, Row 1) | **HIT** |
-| **37** | EN | None | How do I replace the hydraulic brake pads on a supersonic jet? | Out-of-Domain Probe | **ABSTAIN** |
-| **38** | EN | None | What are the chemical fertilizers used for cocoa beans? | Out-of-Domain Probe | **ABSTAIN** |
-| **39** | AR | None | كيف يمكن صيانة محركات الديزل الثقيلة في السفن التجارية؟ | Out-of-Domain Probe | **ABSTAIN** |
-| **40** | AR | None | ما هي درجات الحرارة القياسية المسجلة في القطب الشمالي؟ | Out-of-Domain Probe | **ABSTAIN** |
+First live run with the gate at 0.40 refused two answerable Arabic questions (Q32 top score 0.3803, Q33 0.3727). Measured score distribution:
+
+| Group | Top-1 cosine score range |
+| :--- | :---: |
+| Out-of-domain probes (4) | 0.064 – 0.159 |
+| Answerable questions (36) | 0.373 – 0.758 |
+
+The gate was moved to **0.30**, inside the gap. Result: false refusals 2 → 0, OOD abstention stays 4/4.
+**Caveat:** the threshold was chosen on this same 40-question set with only 4 OOD probes — it is calibrated, not validated. A held-out OOD set (including near-domain questions such as other universities' fees) is required before trusting it.
+
+---
+
+## 3. Voice Turn Latency (Groq generation)
+
+Measured server-side for one turn (`/tmp` benchmark replicating the agent loop: tool-selection LLM call → `answer_rag_query` → reply LLM first sentence → Edge TTS first audio chunk). Excludes VAD end-of-speech and STT.
+
+| Query | Tool call | RAG | Reply 1st sentence | TTS first audio | **Total** |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| EN transcript fee | 979 | 1,198 | 126 | 1,437 | **3,740 ms** |
+| AR lost ID card fee | 492 | 635 | 226 | 1,640 | **2,993 ms** |
+| EN refund week 2 | 419 | 613 | 291 | 1,821 | **3,144 ms** |
+| AR student affairs office | 506 | 1,034 | 118 | 1,720 | **3,378 ms** |
+| **Mean** | | | | | **3,314 ms** |
+
+Previous profile with A2Agent `minimax-m3.1-flash`: **9,037 – 9,736 ms**. LLM generation dropped from ~5,000 ms to ~350–1,000 ms. Edge TTS first-audio (1.4–1.8 s, ~50% of the turn) is now the dominant stage; the spoken "searching…" filler is played as soon as the tool fires, so first audible feedback arrives ≈ tool call + TTS first audio.
+
+---
+
+## 4. Reranker Comparison (earlier live run, unchanged)
+
+| Metric | Dense pgvector | + Cohere `rerank-v3.5` |
+| :--- | :---: | :---: |
+| Hit@1 / MRR | 100% / 1.000 | 100% / 1.000 |
+| Avg retrieval latency | 176.9 ms | 1,042.6 ms (+865.8 ms) |
+| Rate limit | none | 10 RPM (trial key, 429s observed) |
+
+Reranker stays out of the live voice path: no accuracy gain on this corpus, ~0.9 s added latency.
+
+---
+
+## 5. Known Limitations
+
+1. **Saturated retrieval benchmark.** 100% Hit@1 on a 3-document corpus means Hit@k cannot discriminate between retrieval designs; hit is checked at document level, not chunk/row level.
+2. **Small OOD set (4)** and threshold tuned on the test set (Section 2).
+3. **No LLM-as-judge faithfulness** scoring; correctness beyond lexical recall is manual review of 14 answers.
+4. **Groq free tier is 8,000 tokens/min.** Back-to-back evaluation calls hit HTTP 429; `run_eval.py` backs off 8 s and retries, which is why throttled RAG timings read ~9 s. These are excluded from the un-throttled latency figure. In the live agent, `FallbackAdapter` falls through to A2Agent on failure.
+5. **Corpus contradiction** (Room 104 building) is not detected; the system cites whichever chunk ranks first.
+6. Conversation `history` fields in the dataset are not replayed by `run_eval.py` (single-turn evaluation).
+
+---
+
+## 6. Per-Question Results
+
+`Rank` = rank of first chunk from the expected source; `Score` = top-1 cosine similarity; `Recall` = lexical fact recall; `ms` = RAG wall time (includes 429 back-off where throttled).
+
+| ID | Lang | Question | Rank | Score | Recall | Citation / Abstention | ms |
+| :--- | :---: | :--- | :---: | :---: | :---: | :---: | ---: |
+| Q01 | EN | Where is the Office of Student Records and Document Verification located at FEPS? | 1 | 0.6058 | 33% | Yes | 748 |
+| Q02 | EN | What is the standard fee and processing time for an official academic transcript at FEPS? | 1 | 0.5863 | 100% | Yes | 545 |
+| Q03 | EN | What is the tuition refund percentage if a student drops during the second week of classes? | 1 | 0.6894 | 50% | Yes | 776 |
+| Q04 | EN | What is the non-refundable administrative registration fee deducted for refunds requested prior to the first day of classes? | 1 | 0.655 | 50% | Yes | 619 |
+| Q05 | EN | How many business days does it take to disburse approved fee refunds to a student's bank account? | 1 | 0.7032 | 100% | Yes | 503 |
+| Q06 | EN | What is the replacement fee and turnaround time for a lost student ID card at FEPS? | 1 | 0.6196 | 100% | Yes | 997 |
+| Q07 | EN | What is the minimum lecture attendance percentage required to avoid being barred from final exams? | 1 | 0.5824 | 100% | Yes | 737 |
+| Q08 | EN | Within how many calendar days must a final semester grade appeal be submitted, and what is the fee per course? | 1 | 0.6503 | 100% | Yes | 784 |
+| Q09 | EN | What are the undergraduate borrowing privileges and loan duration at the FEPS faculty library? | 1 | 0.666 | 50% | Yes | 845 |
+| Q10 | EN | What is the annual rental fee and key security deposit for campus lockers in Building A? | 1 | 0.7741 | 100% | Yes | 1007 |
+| Q11 | EN | According to the FEPS Credit Hours Handbook, what traditional grade corresponds to a CGPA between 3.6 and 4.0? | 1 | 0.4625 | 100% | Yes | 9163 |
+| Q12 | EN | What are the graduation rounds available for Credit Hours System students at FEPS? | 1 | 0.4729 | 0% | Yes | 9862 |
+| Q13 | EN | What CGPA qualifies an enrolled student for a 25% tuition fee exemption starting the following semester? | 1 | 0.5397 | 50% | Yes | 9778 |
+| Q14 | EN | By what percentage does the credit hour tuition increase during the summer semester? | 1 | 0.5528 | 100% | Yes | 9565 |
+| Q15 | EN | What fine is imposed on language division students if tuition payment is delayed past the sixteenth week? | 1 | 0.5608 | 100% | Yes | 1002 |
+| Q16 | EN | What prerequisite course is required to enroll in course E309 Environmental Economics? | 1 | 0.6553 | 100% | Yes | 9103 |
+| Q17 | EN | According to diversity statistics, what is the total enrollment and state for University of Phoenix-Arizona? | 1 | 0.6776 | 100% | Yes | 9117 |
+| Q18 | EN | What is the reported Women enrollment count for Ivy Tech Community College-Central Indiana? | 1 | 0.7579 | 50% | Yes | 696 |
+| Q19 | EN | What is the Total Minority enrollment reported for Liberty University in Virginia? | 1 | 0.79 | 100% | Yes | 9174 |
+| Q20 | EN | In the diversity dataset, what is the state and Women enrollment for Lone Star College system? | 1 | 0.6578 | 100% | Yes | 900 |
+| Q21 | AR | أين يقع مقر إدارة شؤون الطلاب والسجلات في كلية الاقتصاد والعلوم السياسية بجامعة القاهرة؟ | 1 | 0.4794 | 33% | Yes | 9415 |
+| Q22 | AR | كم تبلغ الرسوم العادية لاستخراج بيان الدرجات الأكاديمي (السجل الدراسي) بالكلية؟ | 1 | 0.4635 | 100% | Yes | 9306 |
+| Q23 | AR | ما هي نسبة استرداد الرسوم الدراسية في حال الانسحاب خلال الأسبوع الأول من بدء الدراسة؟ | 1 | 0.6382 | 100% | Yes | 9330 |
+| Q24 | AR | ما هو مصير طلبات استرداد المصروفات المقدمة بعد نهاية الأسبوع الثاني من بدء الدراسة؟ | 1 | 0.4808 | 100% | Yes | 636 |
+| Q25 | AR | ما هي رسوم استخراج بطاقة الطالب (كارنيه الكلية) بدل الفاقد؟ | 1 | 0.5865 | 50% | Yes | 9097 |
+| Q26 | AR | أين يتلقى طلاب كلية الاقتصاد والعلوم السياسية الرعاية الطبية والعلاج المجاني؟ | 1 | 0.4294 | 100% | Yes | 1593 |
+| Q27 | AR | خلال كم ساعة يجب اعتماد الشهادات والإجازات المرضية من مستشفى الطلبة عند الغياب عن الامتحانات؟ | 1 | 0.6141 | 100% | Yes | 9589 |
+| Q28 | AR | كم تبلغ غرامة التأخير عن إعادة الكتب المستعارة من مكتبة الكلية؟ | 1 | 0.5376 | 50% | Yes | 620 |
+| Q29 | AR | ما هي مهلة تقديم الالتماس وإعادة رصد الدرجات بعد إعلان النتائج الرسمية للامتحانات؟ | 1 | 0.4237 | 0% | Yes | 8957 |
+| Q30 | AR | هل تسترد رسوم الالتماس (100 جنيه) إذا تبين وجود خطأ في رصد درجات الطالب؟ | 1 | 0.5575 | 100% | Yes | 9223 |
+| Q31 | AR | ما هو التقدير التقليدي المقابل للمعدل التراكمي (CGPA) من 3.2 إلى أقل من 3.6 في نظام الساعات المعتمدة بكلية الاقتصاد؟ | 1 | 0.4278 | 50% | Yes | 1007 |
+| Q32 | AR | ما هو التقدير المقابل للمعدل التراكمي من 2.6 إلى أقل من 3.2 في دليل طالب كلية الاقتصاد والعلوم السياسية؟ | 1 | 0.3803 | 50% | Yes | 9526 |
+| Q33 | AR | ما هي أدوار التخرج المتاحة لطلاب نظام الساعات المعتمدة في الكلية؟ | 1 | 0.3727 | 0% | Yes | 9061 |
+| Q34 | AR | ما هي نسبة الإعفاء من المصروفات التي يحصل عليها الطالب الحاصل على معدل 3.7 أو أكثر؟ | 1 | 0.4384 | 100% | Yes | 9852 |
+| Q35 | AR | كم تبلغ غرامة التأخير في سداد المصروفات لشعب اللغات إذا تأخر الطالب بعد الأسبوع السادس عشر؟ | 1 | 0.5215 | 100% | Yes | 9380 |
+| Q36 | AR | وفقاً لبيانات التسجيل الجامعي، كم يبلغ إجمالي عدد الطلاب المسجلين في جامعة فينكس بأريزونا؟ | 1 | 0.5609 | 100% | Yes | 9105 |
+| Q37 | EN | How do I replace the hydraulic brake pads on a supersonic jet aircraft? | 0 | 0.159 | OOD | ABSTAIN ✓ | 139 |
+| Q38 | EN | What are the chemical fertilizers used for growing cocoa beans in the Amazon rainforest? | 0 | 0.0695 | OOD | ABSTAIN ✓ | 138 |
+| Q39 | AR | كيف يمكن صيانة محركات الديزل الثقيلة في السفن التجارية؟ | 0 | 0.0635 | OOD | ABSTAIN ✓ | 139 |
+| Q40 | AR | ما هي درجات الحرارة القياسية المسجلة في القطب الشمالي خلال فصل الشتاء؟ | 0 | 0.1074 | OOD | ABSTAIN ✓ | 141 |

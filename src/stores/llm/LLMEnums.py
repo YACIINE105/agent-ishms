@@ -5,6 +5,7 @@ class LLM_Enums(Enum):
     COHERE= "COHERE"
     GOOGLE_AI = "GOOGLE"
     LLAMA_CPP = "LLAMA_CPP"
+    GROQ = "GROQ"
 
 class OpenAI_Enums(Enum):
     USER = "user"

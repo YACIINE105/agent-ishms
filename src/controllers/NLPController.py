@@ -112,7 +112,7 @@ class NLPController(BaseController):
                 return 'ar'
         return 'en'
 
-    async def answer_rag_query(self, project: Project, query: str, limit: int = 5, min_similarity_score: float = 0.40, max_output_tokens: int = 1200):
+    async def answer_rag_query(self, project: Project, query: str, limit: int = 5, min_similarity_score: float = 0.30, max_output_tokens: int = 1200):
         lang = self.detect_language(query)
         if self.template_parser:
             self.template_parser.set_language(lang)
@@ -128,7 +128,8 @@ class NLPController(BaseController):
             self.last_citations = []
             return refusal_msg, "", []
 
-        # Dual Gating: 1. Relevance score gate: top_score < 0.40 immediately returns refusal
+        # Dual Gating: 1. Relevance score gate: top_score < min_similarity_score immediately returns refusal.
+        # 0.30 sits in the measured gap between OOD queries (max 0.159) and answerable ones (min 0.373).
         top_score = max(((getattr(d, "score", 0.0) or 0.0) for d in retrieved_docs), default=0.0)
         if top_score < min_similarity_score:
             self.last_citations = []

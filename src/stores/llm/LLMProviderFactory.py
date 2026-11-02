@@ -14,6 +14,12 @@ class LLMProviderFactory:
                 api_url = getattr(self.config, "EMBEDDING_BASE_URL", None) or api_url
             return OpenAIProvider(api_key=api_key, api_url=api_url)
 
+        if provider == LLM_Enums.GROQ.value:
+            return OpenAIProvider(
+                api_key=self.config.GROQ_API_KEY,
+                api_url=self.config.GROQ_BASE_URL,
+            )
+
         if provider == LLM_Enums.COHERE.value:
             return CohereProvider(
                 api_key=self.config.COHERE_API_KEY

@@ -7,8 +7,21 @@ from livekit.plugins import openai
 logger = logging.getLogger("livekit-agent")
 
 def build_generation_llm():
-    """Build multi-provider LLM failover chain: a2agent -> google -> openrouter."""
+    """Build multi-provider LLM failover chain: groq -> a2agent -> google -> openrouter."""
     providers = []
+
+    groq_key = os.getenv("GROQ_API_KEY")
+    if groq_key:
+        groq_model = os.getenv("GROQ_LLM_MODEL_ID", "openai/gpt-oss-20b")
+        providers.append(
+            openai.LLM(
+                base_url=os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1").strip("\"'"),
+                api_key=groq_key.strip("\"'"),
+                model=groq_model.strip("\"'"),
+                max_completion_tokens=300,
+            )
+        )
+        logger.info(f"Registered primary LLM: Groq ({groq_model})")
 
     a2_key = os.getenv("A2AGENT_API_KEY")
     if a2_key:
@@ -22,7 +35,7 @@ def build_generation_llm():
                 max_completion_tokens=300,
             )
         )
-        logger.info(f"Registered primary LLM: A2Agent ({a2_model})")
+        logger.info(f"Registered fallback LLM: A2Agent ({a2_model})")
 
     g_key = os.getenv("GOOGLE_AI_API_KEY")
     if g_key:
@@ -36,7 +49,7 @@ def build_generation_llm():
                 max_completion_tokens=300,
             )
         )
-        logger.info(f"Registered secondary LLM: Google AI ({g_model})")
+        logger.info(f"Registered fallback LLM: Google AI ({g_model})")
 
     or_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("openrouter_api_key") or os.getenv("OPENAI_API_KEY")
     if or_key:
