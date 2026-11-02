@@ -31,6 +31,7 @@ class Settings(BaseSettings):
 
     GROQ_API_KEY : str | None = None
     GROQ_BASE_URL : str = "https://api.groq.com/openai/v1"
+    A2AGENT_MODEL_ID : str = "minimax-m3.1-flash"
 
     EMBEDDING_BASE_URL: str | None = None
     EMBEDDING_API_KEY: str | None = None

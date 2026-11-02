@@ -8,13 +8,15 @@ class OpenAIProvider(LLM_Interface):
     def __init__(self , api_key:str, api_url:str=None, 
                         default_generation_max_output_characters:int=1000,
                         default_generation_max_output_token:int=1000, 
-                        default_generation_temperature:float=0.2):
+                        default_generation_temperature:float=0.2,
+                        fallback: LLM_Interface | None = None):
 
         self.api_key = api_key
         self.api_url = api_url
         self.default_generation_max_output_characters = default_generation_max_output_characters
         self.default_generation_max_output_token = default_generation_max_output_token
         self.default_generation_temperature = default_generation_temperature
+        self.fallback = fallback
 
         self.generation_model_id = None
 
@@ -63,7 +65,7 @@ class OpenAIProvider(LLM_Interface):
             content = response.choices[0].message.content
             if not content or not content.strip():
                 self.logger.error("OpenAI returned a successful response, but the text is empty.")
-                return None
+                return self._generate_with_fallback(prompt, chat_history, max_output_token, temperature)
 
             chat_history.append(self.construct_response(response=response))
 
@@ -71,7 +73,15 @@ class OpenAIProvider(LLM_Interface):
 
         except Exception as e:
             self.logger.error(f"Error during text generation: {e}")
+            return self._generate_with_fallback(prompt, chat_history, max_output_token, temperature)
+
+    def _generate_with_fallback(self, prompt, chat_history, max_output_token, temperature):
+        if not self.fallback:
             return None
+        chat_history.pop()  # drop the user turn appended above; the fallback appends its own
+        self.logger.warning("Primary generation failed; retrying with fallback provider")
+        return self.fallback.generate_text(prompt=prompt, chat_history=chat_history,
+                                           max_output_token=max_output_token, temperature=temperature)
 
     def embed_text(self, text: Union[str, List[str]], input_type: str = None, document_type: str = None, **kwargs):
         if not self.client:

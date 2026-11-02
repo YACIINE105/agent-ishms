@@ -15,9 +15,15 @@ class LLMProviderFactory:
             return OpenAIProvider(api_key=api_key, api_url=api_url)
 
         if provider == LLM_Enums.GROQ.value:
+            # Groq free tier is rate limited (8k TPM); fall back to the A2Agent OpenAI-compatible endpoint.
+            fallback = None
+            if self.config.OPENAI_API_KEY:
+                fallback = OpenAIProvider(api_key=self.config.OPENAI_API_KEY, api_url=self.config.OPENAI_BASE_URL)
+                fallback.set_generation_model(self.config.A2AGENT_MODEL_ID)
             return OpenAIProvider(
                 api_key=self.config.GROQ_API_KEY,
                 api_url=self.config.GROQ_BASE_URL,
+                fallback=fallback,
             )
 
         if provider == LLM_Enums.COHERE.value:
