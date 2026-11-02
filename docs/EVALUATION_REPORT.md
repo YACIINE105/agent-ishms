@@ -4,7 +4,8 @@
 **Dataset:** [`eval/questions_40.jsonl`](../eval/questions_40.jsonl) (20 EN / 20 AR; 36 answerable, 4 out-of-domain)
 **Corpus:** `data/corpus/` (`FEPS_student_handbook.pdf`, `student_services_faq.txt`, `diversity_school.csv`)
 **Pipeline under test:** `NLPController.answer_rag_query` — the same code path the voice tool calls (pgvector retrieval → relevance gate 0.30 → grounded generation with `[S#]` citations)
-**Models:** embeddings `nvidia/nemotron-3-embed-1b` (2048-d, halfvec); generation Groq `openai/gpt-oss-20b`
+**Models:** embeddings `nvidia/nemotron-3-embed-1b` (2048-d, halfvec); RAG generation Groq `openai/gpt-oss-20b`; voice agent (tool selection / reply) Groq `openai/gpt-oss-120b` (separate rate-limit bucket)
+**Generation failover (both paths):** Groq → Google AI `gemini-3.8-flash` key 1 → key 2 → A2Agent `minimax-m3.1-flash`, 8 s per-request timeout. Verified by forcing a Groq 401: answer returned via A2Agent in 11.6 s (Google returned 503 at test time).
 **Raw output:** [`eval/results.json`](../eval/results.json) (every answer, citation list, score and timing)
 **Reproduce:** `uv run python eval/run_eval.py`
 **Date:** 2026-11-02
@@ -84,7 +85,7 @@ Reranker stays out of the live voice path: no accuracy gain on this corpus, ~0.9
 1. **Saturated retrieval benchmark.** 100% Hit@1 on a 3-document corpus means Hit@k cannot discriminate between retrieval designs; hit is checked at document level, not chunk/row level.
 2. **Small OOD set (4)** and threshold tuned on the test set (Section 2).
 3. **No LLM-as-judge faithfulness** scoring; correctness beyond lexical recall is manual review of 14 answers.
-4. **Groq free tier is 8,000 tokens/min.** Back-to-back evaluation calls hit HTTP 429; `run_eval.py` backs off 8 s and retries, which is why throttled RAG timings read ~9 s. These are excluded from the un-throttled latency figure. In the live agent, `FallbackAdapter` falls through to A2Agent on failure.
+4. **Groq free tier is 8,000 tokens/min.** Back-to-back evaluation calls hit HTTP 429; this run used `run_eval.py`'s 8 s back-off (made before the provider failover existed), which is why throttled RAG timings read ~9 s. These are excluded from the un-throttled latency figure. Failover now routes failures to Google AI then A2Agent, at the cost of a slower answer (~12–15 s observed).
 5. **Corpus contradiction** (Room 104 building) is not detected; the system cites whichever chunk ranks first.
 6. Conversation `history` fields in the dataset are not replayed by `run_eval.py` (single-turn evaluation).
 
