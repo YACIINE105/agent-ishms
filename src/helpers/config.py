@@ -31,7 +31,6 @@ class Settings(BaseSettings):
 
     GROQ_API_KEY : str | None = None
     GROQ_BASE_URL : str = "https://api.groq.com/openai/v1"
-    A2AGENT_MODEL_ID : str = "minimax-m3.1-flash"
 
     EMBEDDING_BASE_URL: str | None = None
     EMBEDDING_API_KEY: str | None = None
@@ -40,7 +39,8 @@ class Settings(BaseSettings):
 
     GOOGLE_AI_API_KEY : str = None
     GOOGLE_AI_BASE_URL: str | None = "https://generativelanguage.googleapis.com/v1beta/openai/"
-    GOOGLE_AI_MODEL_ID: str | None = "gemini-2.5-flash"
+    GOOGLE_AI_API_KEY_2 : str | None = None
+    GOOGLE_AI_MODEL_ID: str | None = "gemini-3.8-flash"
 
     A2AGENT_API_KEY: str | None = None
     A2AGENT_BASE_URL: str | None = "https://api.a2agent.me/v1"

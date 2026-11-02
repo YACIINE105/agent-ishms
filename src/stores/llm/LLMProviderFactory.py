@@ -15,11 +15,15 @@ class LLMProviderFactory:
             return OpenAIProvider(api_key=api_key, api_url=api_url)
 
         if provider == LLM_Enums.GROQ.value:
-            # Groq free tier is rate limited (8k TPM); fall back to the A2Agent OpenAI-compatible endpoint.
+            # Groq free tier is rate limited (8k TPM). Chain: Groq -> Google key 1 -> Google key 2 -> A2Agent.
             fallback = None
             if self.config.OPENAI_API_KEY:
                 fallback = OpenAIProvider(api_key=self.config.OPENAI_API_KEY, api_url=self.config.OPENAI_BASE_URL)
                 fallback.set_generation_model(self.config.A2AGENT_MODEL_ID)
+            for google_key in (self.config.GOOGLE_AI_API_KEY_2, self.config.GOOGLE_AI_API_KEY):
+                if google_key:
+                    fallback = OpenAIProvider(api_key=google_key, api_url=self.config.GOOGLE_AI_BASE_URL, fallback=fallback)
+                    fallback.set_generation_model(self.config.GOOGLE_AI_MODEL_ID)
             return OpenAIProvider(
                 api_key=self.config.GROQ_API_KEY,
                 api_url=self.config.GROQ_BASE_URL,

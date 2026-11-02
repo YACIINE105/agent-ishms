@@ -24,7 +24,7 @@ class OpenAIProvider(LLM_Interface):
         self.embedding_size = None
         self.enums = OpenAI_Enums
 
-        client_kwargs = {"api_key": self.api_key, "max_retries": 0}
+        client_kwargs = {"api_key": self.api_key, "max_retries": 0, "timeout": 8.0}
         if self.api_url:
             client_kwargs["base_url"] = self.api_url if self.api_url and len(self.api_url)!=0 else None
 

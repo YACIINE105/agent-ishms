@@ -7,7 +7,7 @@ from livekit.plugins import openai
 logger = logging.getLogger("livekit-agent")
 
 def build_generation_llm():
-    """Build multi-provider LLM failover chain: groq -> a2agent -> google -> openrouter."""
+    """Build multi-provider LLM failover chain: groq -> google key 1 -> google key 2 -> a2agent -> openrouter."""
     providers = []
 
     groq_key = os.getenv("GROQ_API_KEY")
@@ -23,6 +23,21 @@ def build_generation_llm():
         )
         logger.info(f"Registered primary LLM: Groq ({groq_model})")
 
+    g_url = (os.getenv("GOOGLE_AI_BASE_URL") or "").strip("\"'") or "https://generativelanguage.googleapis.com/v1beta/openai/"
+    g_model = os.getenv("GOOGLE_AI_MODEL_ID", "gemini-3.8-flash").strip("\"'")
+    for g_key in (os.getenv("GOOGLE_AI_API_KEY"), os.getenv("GOOGLE_AI_API_KEY_2")):
+        if not g_key:
+            continue
+        providers.append(
+            openai.LLM(
+                base_url=g_url,
+                api_key=g_key.strip("\"'"),
+                model=g_model,
+                max_completion_tokens=300,
+            )
+        )
+        logger.info(f"Registered fallback LLM: Google AI ({g_model})")
+
     a2_key = os.getenv("A2AGENT_API_KEY")
     if a2_key:
         a2_url = os.getenv("A2AGENT_BASE_URL", "https://api.a2agent.me/v1")
@@ -36,20 +51,6 @@ def build_generation_llm():
             )
         )
         logger.info(f"Registered fallback LLM: A2Agent ({a2_model})")
-
-    g_key = os.getenv("GOOGLE_AI_API_KEY")
-    if g_key:
-        g_url = (os.getenv("GOOGLE_AI_BASE_URL") or "").strip("\"'") or "https://generativelanguage.googleapis.com/v1beta/openai/"
-        g_model = os.getenv("GOOGLE_AI_MODEL_ID", "gemini-2.5-flash")
-        providers.append(
-            openai.LLM(
-                base_url=g_url,
-                api_key=g_key.strip("\"'"),
-                model=g_model.strip("\"'"),
-                max_completion_tokens=300,
-            )
-        )
-        logger.info(f"Registered fallback LLM: Google AI ({g_model})")
 
     or_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("openrouter_api_key") or os.getenv("OPENAI_API_KEY")
     if or_key:
